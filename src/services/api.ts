@@ -1,5 +1,5 @@
 // src/services/api.ts
-import { supabase } from './supabaseClient';
+import { supabase } from './supabaseApi.ts';
 
 // Note: You may need to update your Report type in 'src/types/Report.ts'
 // to match your new table structure.
