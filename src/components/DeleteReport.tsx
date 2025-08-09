@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Search, AlertTriangle, User, Phone, Hash } from 'lucide-react';
-import { apiService } from '../services/api';
+import { getReports, deleteReport } from '../services/api';
 import { Report } from '../types/Report';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
