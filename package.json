@@ -14,7 +14,7 @@
     "deploy": "npm run build:gh-pages && gh-pages -d dist"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.53.0",
+    "@supabase/supabase-js": "^2.54.0",
     "better-sqlite3": "^9.4.3",
     "concurrently": "^9.2.0",
     "cors": "^2.8.5",
