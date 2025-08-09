@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Save, RotateCcw, Calendar } from 'lucide-react';
-import { apiService } from '../services/api';
+import { addReport } from '../services/api';
 import { ReportFormData } from '../types/Report';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
