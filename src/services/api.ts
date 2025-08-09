@@ -1,8 +1,7 @@
-// src/services/api.ts
 import { supabaseApiService } from './supabaseApi';
 import { Report, ReportFormData } from '../types/Report';
 
-// GET all reports
+// GET all reports, optionally with a search term
 export const getReports = async (search?: string): Promise<Report[]> => {
   return supabaseApiService.getAllReports(search);
 };
