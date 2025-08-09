@@ -1,12 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { Report, ReportFormData } from '../types/Report';
 
-// These environment variables will be set when you connect to Supabase
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please connect to Supabase first.');
+  throw new Error('Missing Supabase environment variables.');
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -26,7 +25,7 @@ class SupabaseApiService {
 
     if (error) {
       console.error('Error fetching reports:', error);
-      throw new Error('Failed to fetch reports');
+      throw error; // Re-throw the original error
     }
 
     return data || [];
@@ -41,7 +40,7 @@ class SupabaseApiService {
 
     if (error) {
       console.error('Error fetching report:', error);
-      throw new Error('Report not found');
+      throw error; // Re-throw the original error
     }
 
     return data;
@@ -56,7 +55,7 @@ class SupabaseApiService {
 
     if (error) {
       console.error('Error creating report:', error);
-      throw new Error('Failed to create report');
+      throw error; // ✅ THIS IS THE IMPORTANT CHANGE
     }
 
     return { id: data.id, message: 'Report created successfully' };
@@ -70,7 +69,7 @@ class SupabaseApiService {
 
     if (error) {
       console.error('Error updating report:', error);
-      throw new Error('Failed to update report');
+      throw error; // Re-throw the original error
     }
 
     return { message: 'Report updated successfully' };
@@ -84,51 +83,10 @@ class SupabaseApiService {
 
     if (error) {
       console.error('Error deleting report:', error);
-      throw new Error('Failed to delete report');
+      throw error; // Re-throw the original error
     }
 
     return { message: 'Report deleted successfully' };
-  }
-
-  // Utility methods for data management
-  async exportData(): Promise<string> {
-    const reports = await this.getAllReports();
-    return JSON.stringify(reports, null, 2);
-  }
-
-  async importData(jsonData: string): Promise<void> {
-    try {
-      const reports = JSON.parse(jsonData);
-      if (!Array.isArray(reports)) {
-        throw new Error('Invalid data format');
-      }
-
-      // Remove id and created_at fields to let Supabase generate new ones
-      const cleanReports = reports.map(({ id, created_at, ...report }) => report);
-
-      const { error } = await supabase
-        .from('reports')
-        .insert(cleanReports);
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      console.error('Error importing data:', error);
-      throw new Error('Failed to import data: Invalid JSON format or database error');
-    }
-  }
-
-  async clearAllData(): Promise<void> {
-    const { error } = await supabase
-      .from('reports')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all records
-
-    if (error) {
-      console.error('Error clearing data:', error);
-      throw new Error('Failed to clear data');
-    }
   }
 }
 
