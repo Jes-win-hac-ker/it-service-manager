@@ -31,11 +31,13 @@ const SubmitReport: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await apiService.createReport(formData);
+      // Correctly call the imported addReport function
+      await addReport(formData);
       toast.success('Report submitted successfully!');
       handleClear();
     } catch (error) {
       toast.error('Failed to submit report');
+      console.error("Submission Error:", error); // Log the actual error for debugging
     } finally {
       setIsSubmitting(false);
     }
@@ -148,13 +150,13 @@ const SubmitReport: React.FC = () => {
               disabled={isSubmitting}
               className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
-              <Save className="h-4 w-4" />
+              <Save className="h-4 w-4" />A
               <span>{isSubmitting ? 'Submitting...' : 'Submit Report'}</span>
             </button>
             
             <button
               type="button"
-              onClick={handleClear}
+              onClick={handleClear}A
               className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors flex items-center justify-center space-x-2"
             >
               <RotateCcw className="h-4 w-4" />
