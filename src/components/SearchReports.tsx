@@ -1,96 +1,141 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash } from 'lucide-react';
-import { getReports } from '../services/api';
-import { Report } from '../types/Report';
+import React, { useState } from 'react';
+import { Edit, Save, Search, RotateCcw, Calendar, User, Phone, Hash, Loader2 } from 'lucide-react';
+import { getReportById, updateReport } from '../services/api';
+import { Report, ReportFormData } from '../types/Report';
+import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
-const SearchReports: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [reports, setReports] = useState<Report[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const UpdateReport: React.FC = () => {
+  const [searchId, setSearchId] = useState('');
+  const [currentReport, setCurrentReport] = useState<Report | null>(null);
+  const [formData, setFormData] = useState<ReportFormData | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const fetchReports = useCallback(async (search: string) => {
-    setIsLoading(true);
-    try {
-      const data = await getReports(search);
-      setReports(data);
-    } catch (error) {
-      console.error("Failed to fetch reports", error);
-      setReports([]); // Clear reports on error
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchReports(''); // Initial fetch for all reports
-  }, [fetchReports]);
-
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    fetchReports(searchTerm);
+    if (!searchId) {
+      toast.error('Please enter a Report ID to search.');
+      return;
+    }
+    setIsSearching(true);
+    setCurrentReport(null);
+    setFormData(null);
+    try {
+      const report = await getReportById(searchId);
+      setCurrentReport(report);
+      // Ensure date is in 'yyyy-MM-dd' format for the input field
+      const formattedDate = format(new Date(report.date_given), 'yyyy-MM-dd');
+      setFormData({
+        serial_number: report.serial_number,
+        customer_name: report.customer_name,
+        phone_number: report.phone_number,
+        problem_description: report.problem_description,
+        date_given: formattedDate,
+      });
+    } catch (error) {
+      toast.error("Report not found.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!formData) return;
+    const { name, value } = e.target;
+    setFormData(prev => prev ? { ...prev, [name]: value } : null);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData || !currentReport) return;
+    
+    setIsUpdating(true);
+    try {
+      await updateReport(currentReport.id, formData);
+      toast.success("Report updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update report.");
+      console.error("Update Error:", error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
-          <Search className="h-6 w-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Search Reports</h2>
+          <Edit className="h-6 w-6 text-blue-600" />
+          <h2 className="text-2xl font-bold text-gray-900">Update Report</h2>
         </div>
 
         <form onSubmit={handleSearch} className="flex gap-4 mb-6">
           <input
             type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
             className="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Search by Serial #, Name, or Phone..."
+            placeholder="Enter Report ID to find and edit"
           />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          <button 
+            type="submit" 
+            disabled={isSearching}
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center w-12"
           >
-            <Search className="h-4 w-4" />
-            <span>Search</span>
+            {isSearching ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
           </button>
         </form>
 
-        <div className="space-y-4">
-          {isLoading ? (
-            <p className="text-center text-gray-500">Loading reports...</p>
-          ) : reports.length > 0 ? (
-            reports.map((report) => (
-              <div key={report.id} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-bold text-lg text-gray-800 flex items-center">
-                      <User className="h-4 w-4 mr-2" /> {report.customer_name}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Hash className="h-4 w-4 mr-2" /> {report.serial_number}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Given: {format(new Date(report.date_given), 'PPP')}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Phone className="h-4 w-4 mr-2" /> {report.phone_number}
-                    </p>
-                  </div>
-                </div>
-                <p className="mt-4 text-gray-700">{report.problem_description}</p>
+        {currentReport && formData && (
+          <form onSubmit={handleUpdate} className="space-y-6 border-t pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Hash className="inline h-4 w-4 mr-1" />
+                  Serial Number
+                </label>
+                <input id="serial_number" name="serial_number" value={formData.serial_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">No reports found.</p>
-          )}
-        </div>
+              <div>
+                <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <User className="inline h-4 w-4 mr-1" />
+                  Customer Name
+                </label>
+                <input id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+              </div>
+              <div>
+                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone className="inline h-4 w-4 mr-1" />
+                  Phone Number
+                </label>
+                <input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+              </div>
+              <div>
+                <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Calendar className="inline h-4 w-4 mr-1" />
+                  Date Given
+                </label>
+                <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">Problem Description</label>
+              <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full p-2 border border-gray-300 rounded-lg"/>
+            </div>
+            <button
+              type="submit"
+              disabled={isUpdating}
+              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <Save className="h-4 w-4" />
+              {isUpdating ? 'Saving...' : 'Save Changes'}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
 };
 
-export default SearchReports;
+export default UpdateReport;
