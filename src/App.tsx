@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Calendar, Phone, User, Hash } from 'lucide-react';
-import { getReports } from '../services/api';
+import { getReports } from './services/api';
 import { Report } from '../types/Report';
 import { format } from 'date-fns';
 
