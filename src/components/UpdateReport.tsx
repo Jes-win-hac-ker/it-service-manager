@@ -150,4 +150,22 @@ const UpdateReport: React.FC = () => {
               </div>
               <div>
                 <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">Problem Description</label>
-                <textarea id="problem_description" nam
+                <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full p-2 border border-gray-300 rounded-lg"/>
+              </div>
+              <button
+                type="submit"
+                disabled={isUpdating}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {isUpdating ? 'Saving...' : 'Save Changes'}
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UpdateReport;
