@@ -7,8 +7,6 @@ export interface Report {
   problem_description: string;
   date_given: string;
   status: string; 
-  date_diagnosed?: string; // Added back
-  date_returned?: string;  // Added back
 }
 
 export type ReportFormData = Omit<Report, 'id' | 'created_at'>;
