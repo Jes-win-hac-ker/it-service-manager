@@ -1,9 +1,11 @@
 import React from 'react';
 import './LoadingScreen.css';
 
-const LoadingScreen: React.FC = () => {
+// The component now accepts an `isFading` prop
+const LoadingScreen: React.FC<{ isFading: boolean }> = ({ isFading }) => {
   return (
-    <div className="loading-screen">
+    // Conditionally apply the 'fade-out' class
+    <div className={`loading-screen ${isFading ? 'fade-out' : ''}`}>
       <div className="loading-content">
         <svg
           className="computer-logo"
