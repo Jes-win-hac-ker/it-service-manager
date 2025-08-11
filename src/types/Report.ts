@@ -6,7 +6,9 @@ export interface Report {
   phone_number: string;
   problem_description: string;
   date_given: string;
-  status: string; // Add the new status field
+  status: string; 
+  date_diagnosed?: string; // Added back
+  date_returned?: string;  // Added back
 }
 
 export type ReportFormData = Omit<Report, 'id' | 'created_at'>;
