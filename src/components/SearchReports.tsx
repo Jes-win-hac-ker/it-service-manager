@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2 } from 'lucide-react';
+import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap } from 'lucide-react';
 import { getReports } from '../services/api';
 import { Report } from '../types/Report';
 import { format, isValid } from 'date-fns';
@@ -64,6 +64,14 @@ const SearchReports: React.FC = () => {
     return isValid(d) ? format(d, 'PPP') : 'Invalid Date';
   };
 
+  const getStatusIndicator = (status: string) => {
+    if (status === 'Returned to Customer') {
+      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+    }
+    // You can add more indicators for other statuses here if you like
+    return <Zap className="h-5 w-5 text-yellow-500" />;
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -102,9 +110,9 @@ const SearchReports: React.FC = () => {
               <div key={report.id} className="border border-gray-200 rounded-lg p-4">
                 <div className="flex justify-between items-start flex-wrap gap-2">
                   <div className="flex items-center">
-                    {report.status === 'Finished' && (
-                      <CheckCircle2 className="h-5 w-5 text-green-500 mr-3" />
-                    )}
+                    <div className="mr-3">
+                      {getStatusIndicator(report.status)}
+                    </div>
                     <div>
                       <p className="font-bold text-lg text-gray-800 flex items-center">
                         <User className="h-4 w-4 mr-2" /> {report.customer_name}
@@ -115,12 +123,10 @@ const SearchReports: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600 flex items-center">
+                     <p className="text-sm font-semibold text-gray-700">{report.status}</p>
+                    <p className="text-sm text-gray-600 flex items-center justify-end mt-1">
                       <Calendar className="h-4 w-4 mr-2" />
                       Given: {formatDate(report.date_given)}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Phone className="h-4 w-4 mr-2" /> {report.phone_number}
                     </p>
                   </div>
                 </div>
