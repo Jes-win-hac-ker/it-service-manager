@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Search, Edit, Trash2, Database } from 'lucide-react';
+import { FileText, Search, Edit, Trash2, Database, Monitor } from 'lucide-react';
 
 interface NavigationProps {
   activeTab: string;
@@ -20,7 +20,8 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2">
-            <FileText className="h-8 w-8 text-blue-600" />
+            {/* Changed Icon Here */}
+            <Monitor className="h-8 w-8 text-blue-600" />
             <h1 className="text-xl font-bold text-gray-900">IT Service Manager</h1>
           </div>
           
