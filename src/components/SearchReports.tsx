@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2 } from 'lucide-react';
+import { Search, Calendar, Phone, User, Hash, Loader2, X } from 'lucide-react';
 import { getReports } from '../services/api';
 import { Report } from '../types/Report';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
 const REPORTS_PER_PAGE = 15;
 
@@ -24,16 +24,13 @@ const SearchReports: React.FC = () => {
     try {
       const data = await getReports(search, pageNum, REPORTS_PER_PAGE);
       
-      setReports(prev => pageNum === 0 ? data : [...prev, ...data]);
+      setReports(prev => (pageNum === 0 ? data : [...prev, ...data]));
       
-      if (data.length < REPORTS_PER_PAGE) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
+      setHasMore(data.length === REPORTS_PER_PAGE);
 
     } catch (error) {
       console.error("Failed to fetch reports", error);
+      toast.error("Could not fetch reports.");
       setReports([]);
     } finally {
       setIsLoading(false);
@@ -42,29 +39,24 @@ const SearchReports: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // This effect will run when the component mounts and when the search term changes.
-    // It resets the page and reports, then fetches the first page of results.
     const handler = setTimeout(() => {
       setPage(0);
       setReports([]);
       fetchReports(searchTerm, 0);
-    }, 500); // Debounce to avoid API calls on every keystroke
+    }, 500); // Debounce search to avoid API calls on every keystroke
 
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [searchTerm, fetchReports]);
-
-  const handleSearchFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // The useEffect hook already handles re-fetching when searchTerm changes.
-    // This function is just here to prevent the default form submission behavior.
-  };
 
   const loadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
     fetchReports(searchTerm, nextPage);
+  };
+
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    return isValid(d) ? format(d, 'PPP') : 'Invalid Date';
   };
 
   return (
@@ -75,25 +67,34 @@ const SearchReports: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900">Search Reports</h2>
         </div>
 
-        <form onSubmit={handleSearchFormSubmit} className="flex gap-4 mb-6">
+        <div className="relative mb-6">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="Search by Serial #, Name, or Phone..."
           />
-        </form>
+          {searchTerm && (
+            <button 
+              onClick={() => setSearchTerm('')} 
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-800"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
 
         <div className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center items-center py-10">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <p className="ml-2 text-gray-500">Loading reports...</p>
             </div>
           ) : reports.length > 0 ? (
             reports.map((report) => (
               <div key={report.id} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start flex-wrap gap-2">
                   <div>
                     <p className="font-bold text-lg text-gray-800 flex items-center">
                       <User className="h-4 w-4 mr-2" /> {report.customer_name}
@@ -105,7 +106,7 @@ const SearchReports: React.FC = () => {
                   <div className="text-right">
                     <p className="text-sm text-gray-600 flex items-center">
                       <Calendar className="h-4 w-4 mr-2" />
-                      Given: {format(new Date(report.date_given), 'PPP')}
+                      Given: {formatDate(report.date_given)}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center">
                       <Phone className="h-4 w-4 mr-2" /> {report.phone_number}
