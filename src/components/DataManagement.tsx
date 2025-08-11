@@ -114,4 +114,45 @@ const DataManagement: React.FC = () => {
       {/* Import Dialog */}
       {showImportDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2x
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Import Data</h3>
+            <textarea
+              value={importData}
+              onChange={(e) => setImportData(e.target.value)}
+              className="w-full h-40 p-2 border rounded-lg"
+              placeholder="Paste your exported JSON data here..."
+            />
+            <div className="flex space-x-3 mt-4">
+              <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Import'}
+              </button>
+              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Clear All Dialog */}
+      {showClearDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Clear All Data</h3>
+            <p className="text-gray-600">Are you sure you want to delete all reports? This cannot be undone.</p>
+            <div className="flex space-x-3 mt-4">
+              <button onClick={handleClearAll} disabled={isBusy} className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50">
+                {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Yes, Clear All'}
+              </button>
+              <button onClick={() => setShowClearDialog(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DataManagement;
