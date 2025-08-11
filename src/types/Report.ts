@@ -1,21 +1,12 @@
 export interface Report {
-  id?: number;
+  id: string;
+  created_at: string;
   serial_number: string;
   customer_name: string;
   phone_number: string;
   problem_description: string;
   date_given: string;
-  date_diagnosed?: string;
-  date_returned?: string;
-  created_at?: string;
+  status: string; // Add the new status field
 }
 
-export interface ReportFormData {
-  serial_number: string;
-  customer_name: string;
-  phone_number: string;
-  problem_description: string;
-  date_given: string;
-  date_diagnosed?: string;
-  date_returned?: string;
-}
+export type ReportFormData = Omit<Report, 'id' | 'created_at'>;
