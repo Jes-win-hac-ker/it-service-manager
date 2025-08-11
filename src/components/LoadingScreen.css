@@ -5,6 +5,14 @@
   justify-content: center;
   min-height: 100vh;
   background-color: #f9fafb; /* bg-gray-50 */
+  opacity: 1;
+  /* This transition will smoothly animate the opacity change */
+  transition: opacity 0.5s ease-out; 
+}
+
+/* This new class will be added to trigger the fade-out */
+.loading-screen.fade-out {
+  opacity: 0;
 }
 
 .loading-content {
@@ -29,21 +37,21 @@
 }
 
 .stand-base {
-  animation-delay: 0.8s;
-}
-
-.stand-neck {
   animation-delay: 1s;
 }
 
-.screen-line-1 {
-  animation-delay: 1.5s;
+.stand-neck {
+  animation-delay: 1.2s;
 }
-.screen-line-2 {
+
+.screen-line-1 {
   animation-delay: 1.8s;
 }
+.screen-line-2 {
+  animation-delay: 2.2s;
+}
 .screen-line-3 {
-  animation-delay: 2.1s;
+  animation-delay: 2.6s;
 }
 
 .loading-title {
@@ -51,13 +59,13 @@
   font-weight: 600;
   color: #374151;
   opacity: 0;
-  animation: fadeIn 0.5s ease-in 2.5s forwards;
+  animation: fadeIn 0.5s ease-in 3s forwards;
 }
 
 .loading-subtitle {
   color: #6b7280; /* text-gray-500 */
   opacity: 0;
-  animation: fadeIn 0.5s ease-in 2.8s forwards;
+  animation: fadeIn 0.5s ease-in 3.3s forwards;
 }
 
 /* Animation Definitions */
