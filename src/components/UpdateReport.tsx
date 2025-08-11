@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Edit, Save, Search, RotateCcw, Calendar, User, Phone, Hash } from 'lucide-react';
+import { Edit, Save, Search, RotateCcw, Calendar, User, Phone, Hash, Loader2 } from 'lucide-react';
 import { getReportById, updateReport } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import toast from 'react-hot-toast';
@@ -81,7 +81,7 @@ const UpdateReport: React.FC = () => {
           <button 
             type="submit" 
             disabled={isSearching}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center w-12"
           >
             {isSearching ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
           </button>
@@ -91,19 +91,31 @@ const UpdateReport: React.FC = () => {
           <form onSubmit={handleUpdate} className="space-y-6 border-t pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+                <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Hash className="inline h-4 w-4 mr-1" />
+                  Serial Number
+                </label>
                 <input id="serial_number" name="serial_number" value={formData.serial_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
               </div>
               <div>
-                <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">Customer Name</label>
+                <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <User className="inline h-4 w-4 mr-1" />
+                  Customer Name
+                </label>
                 <input id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
               </div>
               <div>
-                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone className="inline h-4 w-4 mr-1" />
+                  Phone Number
+                </label>
                 <input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
               </div>
               <div>
-                <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">Date Given</label>
+                <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Calendar className="inline h-4 w-4 mr-1" />
+                  Date Given
+                </label>
                 <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
               </div>
             </div>
