@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Download, Upload, Trash2, Database } from 'lucide-react';
-import { localStorageApiService } from '../services/localStorageApi';
+import { Download, Upload, Trash2, Database, Loader2 } from 'lucide-react';
+import { supabaseApiService } from '../services/supabaseApi';
 import toast from 'react-hot-toast';
 
 const DataManagement: React.FC = () => {
   const [importData, setImportData] = useState('');
+  const [isBusy, setIsBusy] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [showClearDialog, setShowClearDialog] = useState(false);
 
-  const handleExport = () => {
+  const handleExport = async () => {
+    setIsBusy(true);
+    toast.loading('Exporting data...');
     try {
-      const data = localStorageApiService.exportData();
+      const data = await supabaseApiService.exportData();
       const blob = new Blob([data], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -20,34 +23,53 @@ const DataManagement: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      toast.dismiss();
       toast.success('Data exported successfully!');
     } catch (error) {
+      toast.dismiss();
       toast.error('Failed to export data');
+      console.error("Export Error:", error);
+    } finally {
+      setIsBusy(false);
     }
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
+    setIsBusy(true);
+    toast.loading('Importing data...');
     try {
-      localStorageApiService.importData(importData);
-      toast.success('Data imported successfully!');
+      await supabaseApiService.importData(importData);
+      toast.dismiss();
+      toast.success('Data imported successfully! The page will now reload.');
       setImportData('');
       setShowImportDialog(false);
       // Refresh the page to show imported data
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
-      toast.error('Failed to import data: Invalid format');
+      toast.dismiss();
+      toast.error('Failed to import data: Invalid format or database error.');
+      console.error("Import Error:", error);
+    } finally {
+      setIsBusy(false);
     }
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
+    setIsBusy(true);
+    toast.loading('Clearing all data...');
     try {
-      localStorageApiService.clearAllData();
-      toast.success('All data cleared successfully!');
+      await supabaseApiService.clearAllData();
+      toast.dismiss();
+      toast.success('All data cleared successfully! The page will now reload.');
       setShowClearDialog(false);
       // Refresh the page to reflect changes
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
+      toast.dismiss();
       toast.error('Failed to clear data');
+      console.error("Clear Data Error:", error);
+    } finally {
+      setIsBusy(false);
     }
   };
 
@@ -60,63 +82,32 @@ const DataManagement: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Export Card */}
           <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex items-center space-x-2 mb-3">
-              <Download className="h-5 w-5 text-blue-600" />
-              <h3 className="font-semibold text-gray-900">Export Data</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Download all your reports as a JSON file for backup or transfer.
-            </p>
-            <button
-              onClick={handleExport}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Export Reports
+            <h3 className="font-semibold text-gray-900 mb-2">Export Data</h3>
+            <p className="text-sm text-gray-600 mb-4">Download all reports as a JSON file.</p>
+            <button onClick={handleExport} disabled={isBusy} className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+              {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Export Reports'}
             </button>
           </div>
 
+          {/* Import Card */}
           <div className="bg-green-50 p-4 rounded-lg">
-            <div className="flex items-center space-x-2 mb-3">
-              <Upload className="h-5 w-5 text-green-600" />
-              <h3 className="font-semibold text-gray-900">Import Data</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Import reports from a previously exported JSON file.
-            </p>
-            <button
-              onClick={() => setShowImportDialog(true)}
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
-            >
+            <h3 className="font-semibold text-gray-900 mb-2">Import Data</h3>
+            <p className="text-sm text-gray-600 mb-4">Import reports from a JSON file.</p>
+            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
               Import Reports
             </button>
           </div>
 
+          {/* Clear Data Card */}
           <div className="bg-red-50 p-4 rounded-lg">
-            <div className="flex items-center space-x-2 mb-3">
-              <Trash2 className="h-5 w-5 text-red-600" />
-              <h3 className="font-semibold text-gray-900">Clear All Data</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Remove all reports from local storage. This cannot be undone.
-            </p>
-            <button
-              onClick={() => setShowClearDialog(true)}
-              className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-            >
+            <h3 className="font-semibold text-gray-900 mb-2">Clear All Data</h3>
+            <p className="text-sm text-gray-600 mb-4">Permanently delete all reports.</p>
+            <button onClick={() => setShowClearDialog(true)} disabled={isBusy} className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50">
               Clear All Data
             </button>
           </div>
-        </div>
-
-        <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Important Notes:</h4>
-          <ul className="text-sm text-gray-700 space-y-1">
-            <li>• Data is stored locally in your browser's storage</li>
-            <li>• Clearing browser data will remove all reports</li>
-            <li>• Export your data regularly for backup</li>
-            <li>• Data is not shared between different browsers or devices</li>
-          </ul>
         </div>
       </div>
 
@@ -124,39 +115,18 @@ const DataManagement: React.FC = () => {
       {showImportDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
-            <div className="flex items-center space-x-2 mb-4">
-              <Upload className="h-6 w-6 text-green-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Import Data</h3>
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Paste JSON data here:
-              </label>
-              <textarea
-                value={importData}
-                onChange={(e) => setImportData(e.target.value)}
-                className="w-full h-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
-                placeholder="Paste your exported JSON data here..."
-              />
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={handleImport}
-                disabled={!importData.trim()}
-                className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Import Data
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Import Data</h3>
+            <textarea
+              value={importData}
+              onChange={(e) => setImportData(e.target.value)}
+              className="w-full h-40 p-2 border rounded-lg"
+              placeholder="Paste your exported JSON data here..."
+            />
+            <div className="flex space-x-3 mt-4">
+              <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Import'}
               </button>
-              
-              <button
-                onClick={() => {
-                  setShowImportDialog(false);
-                  setImportData('');
-                }}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors"
-              >
+              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
                 Cancel
               </button>
             </div>
@@ -168,34 +138,13 @@ const DataManagement: React.FC = () => {
       {showClearDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center space-x-2 mb-4">
-              <Trash2 className="h-6 w-6 text-red-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Clear All Data</h3>
-            </div>
-            
-            <div className="mb-6">
-              <p className="text-gray-600">
-                Are you sure you want to delete all reports? This action cannot be undone.
-              </p>
-              <div className="mt-3 p-3 bg-red-50 rounded-lg">
-                <p className="text-sm text-red-800 font-medium">
-                  ⚠️ This will permanently delete all your service reports!
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={handleClearAll}
-                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-              >
-                Yes, Clear All
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Clear All Data</h3>
+            <p className="text-gray-600">Are you sure you want to delete all reports? This cannot be undone.</p>
+            <div className="flex space-x-3 mt-4">
+              <button onClick={handleClearAll} disabled={isBusy} className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50">
+                {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Yes, Clear All'}
               </button>
-              
-              <button
-                onClick={() => setShowClearDialog(false)}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors"
-              >
+              <button onClick={() => setShowClearDialog(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
                 Cancel
               </button>
             </div>
