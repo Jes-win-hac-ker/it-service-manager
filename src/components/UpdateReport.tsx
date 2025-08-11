@@ -81,4 +81,92 @@ const UpdateReport: React.FC = () => {
     } catch (error) {
       toast.error("Failed to update report.");
     } finally {
-      se
+      setIsUpdating(false);
+    }
+  };
+  
+  const clearSelection = () => {
+    setCurrentReport(null);
+    setFormData(null);
+    setSearchResults([]);
+    setSearchTerm('');
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-lg shadow-md p-6">
+        {!currentReport && (
+          <>
+            <div className="flex items-center space-x-2 mb-6">
+              <Edit className="h-6 w-6 text-blue-600" />
+              <h2 className="text-2xl font-bold text-gray-900">Update Report</h2>
+            </div>
+            <form onSubmit={handleSearch} className="flex gap-4 mb-6">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-grow px-3 py-2 border border-gray-300 rounded-lg"
+                placeholder="Search by Name, Phone, or Serial #"
+              />
+              <button type="submit" disabled={isSearching} className="bg-blue-600 text-white p-2 rounded-lg">
+                {isSearching ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
+              </button>
+            </form>
+          </>
+        )}
+
+        {searchResults.length > 0 && (
+          <div className="space-y-2 border-t pt-4">
+            <h3 className="font-semibold">Multiple reports found. Select one to edit:</h3>
+            {searchResults.map(report => (
+              <div key={report.id} onClick={() => selectReportForEditing(report)} className="p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                <p className="font-bold">{report.customer_name}</p>
+                <p className="text-sm text-gray-600">{report.serial_number}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {currentReport && formData && (
+          <div>
+            <button onClick={clearSelection} className="flex items-center text-sm text-blue-600 hover:underline mb-4">
+                <ChevronLeft className="h-4 w-4" /> Back to Search
+            </button>
+            <form onSubmit={handleUpdate} className="space-y-6 border-t pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <select id="status" name="status" value={formData.status} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg">
+                    {statusOptions.map(option => <option key={option}>{option}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">Customer Name</label>
+                  <input id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                </div>
+                <div>
+                  <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                  <input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                </div>
+              </div>
+              <div>
+                <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">Problem Description</label>
+                <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full p-2 border border-gray-300 rounded-lg"/>
+              </div>
+              <button
+                type="submit"
+                disabled={isUpdating}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+              >
+                {isUpdating ? 'Saving...' : 'Save Changes'}
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UpdateReport;
