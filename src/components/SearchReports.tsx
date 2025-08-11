@@ -1,4 +1,4 @@
-import React, a from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2 } from 'lucide-react';
 import { getReports } from '../services/api';
 import { Report } from '../types/Report';
