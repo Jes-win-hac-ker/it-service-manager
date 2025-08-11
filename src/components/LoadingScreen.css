@@ -5,25 +5,75 @@
   justify-content: center;
   min-height: 100vh;
   background-color: #f9fafb; /* bg-gray-50 */
-  opacity: 1;
-  transition: opacity 0.5s ease-out;
 }
 
 .loading-content {
   text-align: center;
+  position: relative;
 }
 
-.animated-logo {
+.computer-container {
+  position: relative;
+  width: 120px; /* Adjust size as needed */
+  height: 120px;
+  margin: 0 auto;
+}
+
+.computer-logo {
   stroke: #2563eb; /* text-blue-600 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.paper-outline,
-.paper-fold,
-.line-1,
-.line-2,
-.line-3 {
+.monitor-outline,
+.stand-base,
+.stand-neck {
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
+  animation: draw 1s ease-out forwards;
+}
+
+.stand-base {
+  animation-delay: 0.8s;
+}
+
+.stand-neck {
+  animation-delay: 1s;
+}
+
+.screen-text {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 10px;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.typing-effect {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  animation: typing 2s steps(20, end) 1.5s forwards, fadeIn 0.1s 1.5s forwards;
+}
+
+.cursor {
+  display: inline-block;
+  opacity: 0;
+  animation: blink 0.7s infinite, fadeIn 0.1s 1.4s forwards;
+}
+
+.loading-subtitle {
+  margin-top: 1rem;
+  color: #6b7280; /* text-gray-500 */
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 3.5s forwards;
 }
 
 /* Animation Definitions */
@@ -33,39 +83,17 @@
   }
 }
 
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-/* Applying Animations */
-.loading-screen .paper-outline {
-  animation: draw 1s ease-out forwards;
-}
-.loading-screen .paper-fold {
-  animation: draw 0.5s ease-out 0.8s forwards;
-}
-.loading-screen .line-1 {
-  animation: draw 0.4s ease-out 1.2s forwards;
-}
-.loading-screen .line-2 {
-  animation: draw 0.4s ease-out 1.5s forwards;
-}
-.loading-screen .line-3 {
-  animation: draw 0.3s ease-out 1.8s forwards;
-}
-
-.loading-title {
-  margin-top: 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #374151; /* text-gray-700 */
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in 2s forwards;
-}
-
-.loading-subtitle {
-  color: #6b7280; /* text-gray-500 */
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in 2.2s forwards;
 }
