@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2, X } from 'lucide-react';
+import React, a from 'react';
+import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2 } from 'lucide-react';
 import { getReports } from '../services/api';
 import { Report } from '../types/Report';
 import { format, isValid } from 'date-fns';
+import toast from 'react-hot-toast';
 
 const REPORTS_PER_PAGE = 15;
 
@@ -43,10 +44,14 @@ const SearchReports: React.FC = () => {
       setPage(0);
       setReports([]);
       fetchReports(searchTerm, 0);
-    }, 500); // Debounce search to avoid API calls on every keystroke
+    }, 500); // Debounce search
 
     return () => clearTimeout(handler);
   }, [searchTerm, fetchReports]);
+
+  const handleSearchFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
 
   const loadMore = () => {
     const nextPage = page + 1;
@@ -67,7 +72,7 @@ const SearchReports: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900">Search Reports</h2>
         </div>
 
-        <div className="relative mb-6">
+        <form onSubmit={handleSearchFormSubmit} className="relative mb-6">
           <input
             type="text"
             value={searchTerm}
@@ -79,11 +84,12 @@ const SearchReports: React.FC = () => {
             <button 
               onClick={() => setSearchTerm('')} 
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-800"
+              type="button"
             >
               <X className="h-5 w-5" />
             </button>
           )}
-        </div>
+        </form>
 
         <div className="space-y-4">
           {isLoading ? (
@@ -95,13 +101,18 @@ const SearchReports: React.FC = () => {
             reports.map((report) => (
               <div key={report.id} className="border border-gray-200 rounded-lg p-4">
                 <div className="flex justify-between items-start flex-wrap gap-2">
-                  <div>
-                    <p className="font-bold text-lg text-gray-800 flex items-center">
-                      <User className="h-4 w-4 mr-2" /> {report.customer_name}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Hash className="h-4 w-4 mr-2" /> {report.serial_number}
-                    </p>
+                  <div className="flex items-center">
+                    {report.status === 'Finished' && (
+                      <CheckCircle2 className="h-5 w-5 text-green-500 mr-3" />
+                    )}
+                    <div>
+                      <p className="font-bold text-lg text-gray-800 flex items-center">
+                        <User className="h-4 w-4 mr-2" /> {report.customer_name}
+                      </p>
+                      <p className="text-sm text-gray-600 flex items-center">
+                        <Hash className="h-4 w-4 mr-2" /> {report.serial_number}
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-600 flex items-center">
