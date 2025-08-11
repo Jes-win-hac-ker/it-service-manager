@@ -74,38 +74,47 @@ const DataManagement: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Database className="h-6 w-6 text-blue-600" />
           <h2 className="text-2xl font-bold text-gray-900">Data Management</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Export Card */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Export Data</h3>
-            <p className="text-sm text-gray-600 mb-4">Download all reports as a JSON file.</p>
-            <button onClick={handleExport} disabled={isBusy} className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Export Reports'}
+        <div className="space-y-4">
+          {/* Export Row */}
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900">Export Data</h3>
+              <p className="text-sm text-gray-600">Download all reports as a JSON file.</p>
+            </div>
+            <button onClick={handleExport} disabled={isBusy} className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              <span>Export</span>
             </button>
           </div>
 
-          {/* Import Card */}
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Import Data</h3>
-            <p className="text-sm text-gray-600 mb-4">Import reports from a JSON file.</p>
-            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
-              Import Reports
+          {/* Import Row */}
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900">Import Data</h3>
+              <p className="text-sm text-gray-600">Import reports from a JSON file.</p>
+            </div>
+            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2">
+               <Upload className="h-4 w-4" />
+              <span>Import</span>
             </button>
           </div>
 
-          {/* Clear Data Card */}
-          <div className="bg-red-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Clear All Data</h3>
-            <p className="text-sm text-gray-600 mb-4">Permanently delete all reports.</p>
-            <button onClick={() => setShowClearDialog(true)} disabled={isBusy} className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50">
-              Clear All Data
+          {/* Clear Data Row */}
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900">Clear All Data</h3>
+              <p className="text-sm text-gray-600">Permanently delete all reports.</p>
+            </div>
+            <button onClick={() => setShowClearDialog(true)} disabled={isBusy} className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2">
+              <Trash2 className="h-4 w-4" />
+              <span>Clear All</span>
             </button>
           </div>
         </div>
