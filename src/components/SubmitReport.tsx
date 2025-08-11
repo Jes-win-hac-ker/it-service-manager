@@ -156,7 +156,7 @@ const SubmitReport: React.FC = () => {
             
             <button
               type="button"
-              onClick={handleClear}A
+              onClick={handleClear}
               className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors flex items-center justify-center space-x-2"
             >
               <RotateCcw className="h-4 w-4" />
