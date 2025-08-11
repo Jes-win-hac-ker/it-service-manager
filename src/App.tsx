@@ -6,19 +6,29 @@ import SearchReports from './components/SearchReports';
 import UpdateReport from './components/UpdateReport';
 import DeleteReport from './components/DeleteReport';
 import DataManagement from './components/DataManagement';
-import LoadingScreen from './components/LoadingScreen'; // Import the new component
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   const [activeTab, setActiveTab] = useState('submit');
   const [isLoading, setIsLoading] = useState(true);
+  const [isFading, setIsFading] = useState(false); // New state to control the fade
 
   useEffect(() => {
-    // Simulate initial page load and animation time
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000); // Show loader for 3 seconds to allow animation to complete
+    // Timer to start the fade-out animation
+    const fadeTimer = setTimeout(() => {
+      setIsFading(true);
+    }, 4500); // Starts fading at 4.5 seconds
 
-    return () => clearTimeout(timer); // Cleanup timer
+    // Timer to remove the component after the fade animation is complete
+    const unmountTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000); // Total time is 5 seconds
+
+    // Cleanup timers on component unmount
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(unmountTimer);
+    };
   }, []);
 
   const renderActiveComponent = () => {
@@ -39,7 +49,8 @@ function App() {
   };
 
   if (isLoading) {
-    return <LoadingScreen />;
+    // Pass the isFading prop to the LoadingScreen
+    return <LoadingScreen isFading={isFading} />;
   }
 
   return (
