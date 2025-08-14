@@ -17,6 +17,7 @@ const SubmitReport: React.FC = () => {
     invoice_number: '',
     part_name: '',
     shop_name: '',
+    part_number:'',
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
