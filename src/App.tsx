@@ -5,6 +5,7 @@ import SubmitReport from './components/SubmitReport';
 import SearchReports from './components/SearchReports';
 import DataManagement from './components/DataManagement';
 import LoadingScreen from './components/LoadingScreen';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
   const [activeTab, setActiveTab] = useState('submit');
@@ -52,4 +53,10 @@ function App() {
   );
 }
 
-export default App;
+const AppWrapper = () => (
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
+);
+
+export default AppWrapper;
