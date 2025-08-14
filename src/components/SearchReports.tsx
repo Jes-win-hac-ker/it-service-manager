@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save, Trash2, AlertTriangle } from 'lucide-react';
+import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save, Trash2, AlertTriangle, Store, Package } from 'lucide-react';
 import { getReports, updateReport, deleteReport } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import { format, isValid } from 'date-fns';
@@ -15,7 +15,6 @@ const SearchReports: React.FC = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // State for modals
   const [reportToEdit, setReportToEdit] = useState<Report | null>(null);
   const [reportToDelete, setReportToDelete] = useState<Report | null>(null);
   const [formData, setFormData] = useState<ReportFormData | null>(null);
@@ -57,14 +56,20 @@ const SearchReports: React.FC = () => {
 
   const openEditModal = (report: Report) => {
     setReportToEdit(report);
-    const formattedDate = isValid(new Date(report.date_given)) ? format(new Date(report.date_given), 'yyyy-MM-dd') : '';
+    const formatDateForInput = (date?: string) => {
+        if (!date) return '';
+        return isValid(new Date(date)) ? format(new Date(date), 'yyyy-MM-dd') : '';
+    }
     setFormData({
       serial_number: report.serial_number,
       customer_name: report.customer_name,
       phone_number: report.phone_number,
       problem_description: report.problem_description,
-      date_given: formattedDate,
+      date_given: formatDateForInput(report.date_given),
       status: report.status || 'Pending Diagnosis',
+      invoice_number: report.invoice_number || '',
+      part_name: report.part_name || '',
+      shop_name: report.shop_name || '',
     });
   };
 
@@ -92,7 +97,7 @@ const SearchReports: React.FC = () => {
       await deleteReport(reportToDelete.id);
       toast.success("Report deleted successfully!");
       setReportToDelete(null);
-      fetchReports(searchTerm, 0); // Refresh the list
+      fetchReports(searchTerm, 0);
     } catch (error) {
       toast.error("Failed to delete report.");
     } finally {
@@ -140,7 +145,7 @@ const SearchReports: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg"
             placeholder="Search by Serial #, Name, or Phone..."
           />
           {searchTerm && (
@@ -158,42 +163,37 @@ const SearchReports: React.FC = () => {
           {isLoading ? (
              <div className="flex justify-center items-center py-10">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-              <p className="ml-2 text-gray-500">Loading reports...</p>
-            </div>
+             </div>
           ) : reports.length > 0 ? (
             reports.map((report) => (
               <div key={report.id} className="border border-gray-200 rounded-lg p-4">
                 <div className="flex justify-between items-start flex-wrap gap-2">
                   <div className="flex items-center">
-                    <div className="mr-3">
-                      {getStatusIndicator(report.status)}
-                    </div>
+                    <div className="mr-3">{getStatusIndicator(report.status)}</div>
                     <div>
-                      <p className="font-bold text-lg text-gray-800 flex items-center">
-                        <User className="h-4 w-4 mr-2" /> {report.customer_name}
-                      </p>
-                      <p className="text-sm text-gray-600 flex items-center">
-                        <Hash className="h-4 w-4 mr-2" /> {report.serial_number}
-                      </p>
+                      <p className="font-bold text-lg text-gray-800">{report.customer_name}</p>
+                      <p className="text-sm text-gray-600">{report.serial_number}</p>
                     </div>
                   </div>
                   <div className="text-right">
                      <p className="text-sm font-semibold text-gray-700">{report.status}</p>
-                    <p className="text-sm text-gray-600 flex items-center justify-end mt-1">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Given: {formatDate(report.date_given)}
-                    </p>
+                    <p className="text-sm text-gray-600 mt-1">{formatDate(report.date_given)}</p>
                   </div>
                 </div>
                 <p className="mt-4 text-gray-700">{report.problem_description}</p>
+                {(report.part_name || report.invoice_number || report.shop_name) && (
+                  <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
+                    {report.part_name && <p className="flex items-center"><Package className="h-4 w-4 mr-2"/>Part: {report.part_name}</p>}
+                    {report.invoice_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Invoice: {report.invoice_number}</p>}
+                    {report.shop_name && <p className="flex items-center"><Store className="h-4 w-4 mr-2"/>Shop: {report.shop_name}</p>}
+                  </div>
+                )}
                 <div className="flex justify-end items-center gap-2 mt-2">
                   <button onClick={() => openEditModal(report)} className="flex items-center gap-2 text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-200">
-                    <Edit className="h-4 w-4" />
-                    Edit
+                    <Edit className="h-4 w-4" /> Edit
                   </button>
                   <button onClick={() => setReportToDelete(report)} className="flex items-center gap-2 text-sm bg-red-100 text-red-700 px-3 py-1 rounded-md hover:bg-red-200">
-                    <Trash2 className="h-4 w-4" />
-                    Delete
+                    <Trash2 className="h-4 w-4" /> Delete
                   </button>
                 </div>
               </div>
@@ -205,19 +205,8 @@ const SearchReports: React.FC = () => {
         
         {hasMore && !isLoading && (
           <div className="mt-6 text-center">
-            <button
-              onClick={loadMore}
-              disabled={isLoadingMore}
-              className="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 disabled:opacity-50 flex items-center justify-center mx-auto"
-            >
-              {isLoadingMore ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                'Load More'
-              )}
+            <button onClick={loadMore} disabled={isLoadingMore} className="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 disabled:opacity-50">
+              {isLoadingMore ? 'Loading...' : 'Load More'}
             </button>
           </div>
         )}
@@ -239,10 +228,18 @@ const SearchReports: React.FC = () => {
                   <label className="block text-sm font-medium">Customer Name</label>
                   <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Problem Description</label>
-                <textarea name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={3} className="w-full p-2 border rounded-lg mt-1"/>
+                <div>
+                  <label className="block text-sm font-medium">Part Name</label>
+                  <input name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">Invoice Number</label>
+                  <input name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium">Shop Purchased From</label>
+                  <input name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
+                </div>
               </div>
               <div className="flex justify-end gap-4 pt-4">
                 <button type="button" onClick={() => setReportToEdit(null)} className="bg-gray-200 py-2 px-4 rounded-lg">Cancel</button>
@@ -256,37 +253,16 @@ const SearchReports: React.FC = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {reportToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
-            <div className="flex items-start">
-              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
-              </div>
-              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Delete Report</h3>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    Are you sure you want to delete the report for "{reportToDelete.customer_name}"? This action cannot be undone.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <h3 className="text-lg font-medium text-gray-900">Delete Report</h3>
+            <p className="text-sm text-gray-500 mt-2">Are you sure you want to delete the report for "{reportToDelete.customer_name}"?</p>
             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                {isDeleting ? <Loader2 className="h-5 w-5 animate-spin"/> : 'Delete'}
+              <button type="button" onClick={handleDelete} disabled={isDeleting} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm">
+                {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
-              <button
-                type="button"
-                onClick={() => setReportToDelete(null)}
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm"
-              >
+              <button type="button" onClick={() => setReportToDelete(null)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm">
                 Cancel
               </button>
             </div>
