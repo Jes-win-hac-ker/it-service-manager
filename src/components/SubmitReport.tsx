@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { Save, RotateCcw, Calendar } from 'lucide-react';
+import { Save, RotateCcw, Calendar, PlusCircle, Hash, Package, Store } from 'lucide-react';
 import { addReport } from '../services/api';
 import { ReportFormData } from '../types/Report';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 
 const SubmitReport: React.FC = () => {
+  const [showExtraFields, setShowExtraFields] = useState(false);
   const [formData, setFormData] = useState<ReportFormData>({
     serial_number: '',
     customer_name: '',
     phone_number: '',
     problem_description: '',
     date_given: format(new Date(), 'yyyy-MM-dd'),
+    status: 'Pending Diagnosis',
+    invoice_number: '',
+    part_name: '',
+    shop_name: '',
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,13 +36,12 @@ const SubmitReport: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Correctly call the imported addReport function
       await addReport(formData);
       toast.success('Report submitted successfully!');
       handleClear();
     } catch (error) {
       toast.error('Failed to submit report');
-      console.error("Submission Error:", error); // Log the actual error for debugging
+      console.error("Submission Error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -50,9 +54,14 @@ const SubmitReport: React.FC = () => {
       phone_number: '',
       problem_description: '',
       date_given: format(new Date(), 'yyyy-MM-dd'),
+      status: 'Pending Diagnosis',
+      invoice_number: '',
+      part_name: '',
+      shop_name: '',
     });
+    setShowExtraFields(false);
   };
-  
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -64,103 +73,61 @@ const SubmitReport: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">
-                Serial Number *
-              </label>
-              <input
-                type="text"
-                id="serial_number"
-                name="serial_number"
-                value={formData.serial_number}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Enter serial number"
-                required
-              />
+              <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">Serial Number *</label>
+              <input type="text" id="serial_number" name="serial_number" value={formData.serial_number} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter serial number" required />
             </div>
-
             <div>
-              <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">
-                Customer Name *
-              </label>
-              <input
-                type="text"
-                id="customer_name"
-                name="customer_name"
-                value={formData.customer_name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Enter customer name"
-                required
-              />
+              <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">Customer Name *</label>
+              <input type="text" id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter customer name" required />
             </div>
-
             <div>
-              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                id="phone_number"
-                name="phone_number"
-                value={formData.phone_number}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Enter phone number"
-                required
-              />
+              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+              <input type="tel" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter phone number" required />
             </div>
-
             <div>
-              <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">
-                <Calendar className="inline h-4 w-4 mr-1" />
-                Date Given *
-              </label>
-              <input
-                type="date"
-                id="date_given"
-                name="date_given"
-                value={formData.date_given}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                required
-              />
+              <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">Date Given *</label>
+              <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" required />
             </div>
           </div>
 
           <div>
-            <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">
-              Problem Description *
-            </label>
-            <textarea
-              id="problem_description"
-              name="problem_description"
-              value={formData.problem_description}
-              onChange={handleInputChange}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-              placeholder="Describe the problem in detail..."
-              required
-            />
+            <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">Problem Description *</label>
+            <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Describe the problem..." required />
           </div>
 
-          <div className="flex space-x-4 pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-            >
-              <Save className="h-4 w-4" />
-              <span>{isSubmitting ? 'Submitting...' : 'Submit Report'}</span>
+          {!showExtraFields && (
+            <button type="button" onClick={() => setShowExtraFields(true)} className="w-full flex items-center justify-center gap-2 text-blue-600 py-2 rounded-lg hover:bg-blue-50">
+              <PlusCircle className="h-5 w-5" />
+              Add Part / Invoice Details (Optional)
             </button>
-            
-            <button
-              type="button"
-              onClick={handleClear}
-              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors flex items-center justify-center space-x-2"
-            >
-              <RotateCcw className="h-4 w-4" />
-              <span>Clear Form</span>
+          )}
+
+          {showExtraFields && (
+            <div className="space-y-4 border-t pt-4">
+               <h3 className="font-semibold text-lg">Part & Invoice Details</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label htmlFor="part_name" className="block text-sm font-medium text-gray-700 mb-2"><Package className="inline h-4 w-4 mr-1"/>Part Name</label>
+                    <input id="part_name" name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                 </div>
+                 <div>
+                    <label htmlFor="invoice_number" className="block text-sm font-medium text-gray-700 mb-2"><Hash className="inline h-4 w-4 mr-1"/>Invoice Number</label>
+                    <input id="invoice_number" name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                 </div>
+                 <div className="md:col-span-2">
+                    <label htmlFor="shop_name" className="block text-sm font-medium text-gray-700 mb-2"><Store className="inline h-4 w-4 mr-1"/>Shop Purchased From</label>
+                    <input id="shop_name" name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                 </div>
+               </div>
+            </div>
+          )}
+
+          <div className="flex space-x-4 pt-4">
+            <button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+              {isSubmitting ? 'Submitting...' : 'Submit Report'}
+            </button>
+            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+              Clear Form
             </button>
           </div>
         </form>
