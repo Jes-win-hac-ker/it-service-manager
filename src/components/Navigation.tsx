@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Search, Edit, Trash2, Database, Monitor, Sun, Moon } from 'lucide-react';
+import { FileText, Search, Database, Monitor, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext'; // Import the useTheme hook
 
 interface NavigationProps {
@@ -11,8 +11,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const { theme, toggleTheme } = useTheme(); // Use the theme context
   const tabs = [
     { id: 'submit', label: 'Submit Report', icon: FileText },
-    { id: 'search', label: 'Search & Update', icon: Search },
-    { id: 'delete', label: 'Delete Report', icon: Trash2 },
+    { id: 'search', label: 'Search & Manage', icon: Search },
     { id: 'data', label: 'Data Management', icon: Database },
   ];
 
