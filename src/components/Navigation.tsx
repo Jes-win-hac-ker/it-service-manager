@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Search, Trash2, Database, Monitor } from 'lucide-react';
+import { FileText, Search, Database, Monitor } from 'lucide-react';
 
 interface NavigationProps {
   activeTab: string;
@@ -9,8 +9,7 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'submit', label: 'Submit Report', icon: FileText },
-    { id: 'search', label: 'Search & Update', icon: Search }, // Label updated
-    { id: 'delete', label: 'Delete Report', icon: Trash2 },
+    { id: 'search', label: 'Search & Manage', icon: Search }, // Updated Label
     { id: 'data', label: 'Data Management', icon: Database },
   ];
 
