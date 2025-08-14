@@ -17,7 +17,7 @@ const SubmitReport: React.FC = () => {
     invoice_number: '',
     part_name: '',
     shop_name: '',
-    part_number:'',
+    part_number: '', // Initialize new field
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,7 +42,6 @@ const SubmitReport: React.FC = () => {
       handleClear();
     } catch (error) {
       toast.error('Failed to submit report');
-      console.error("Submission Error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -59,6 +58,7 @@ const SubmitReport: React.FC = () => {
       invoice_number: '',
       part_name: '',
       shop_name: '',
+      part_number: '', // Clear new field
     });
     setShowExtraFields(false);
   };
@@ -66,34 +66,31 @@ const SubmitReport: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center space-x-2 mb-6">
-          <Save className="h-6 w-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Submit New Report</h2>
-        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Submit New Report</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Main form fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="serial_number" className="block text-sm font-medium text-gray-700 mb-2">Serial Number *</label>
-              <input type="text" id="serial_number" name="serial_number" value={formData.serial_number} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter serial number" required />
+              <label htmlFor="serial_number" className="block text-sm font-medium">Serial Number *</label>
+              <input type="text" id="serial_number" name="serial_number" value={formData.serial_number} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
             </div>
             <div>
-              <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700 mb-2">Customer Name *</label>
-              <input type="text" id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter customer name" required />
+              <label htmlFor="customer_name" className="block text-sm font-medium">Customer Name *</label>
+              <input type="text" id="customer_name" name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
             </div>
             <div>
-              <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-              <input type="tel" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Enter phone number" required />
+              <label htmlFor="phone_number" className="block text-sm font-medium">Phone Number *</label>
+              <input type="tel" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
             </div>
             <div>
-              <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">Date Given *</label>
-              <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg" required />
+              <label htmlFor="date_given" className="block text-sm font-medium">Date Given *</label>
+              <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
             </div>
           </div>
-
           <div>
-            <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 mb-2">Problem Description *</label>
-            <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Describe the problem..." required />
+            <label htmlFor="problem_description" className="block text-sm font-medium">Problem Description *</label>
+            <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full p-2 border rounded-lg mt-1" required />
           </div>
 
           {!showExtraFields && (
@@ -108,26 +105,30 @@ const SubmitReport: React.FC = () => {
                <h3 className="font-semibold text-lg">Part & Invoice Details</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
-                    <label htmlFor="part_name" className="block text-sm font-medium text-gray-700 mb-2"><Package className="inline h-4 w-4 mr-1"/>Part Name</label>
-                    <input id="part_name" name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                    <label htmlFor="part_name" className="block text-sm font-medium">Part Name</label>
+                    <input id="part_name" name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
                  </div>
                  <div>
-                    <label htmlFor="invoice_number" className="block text-sm font-medium text-gray-700 mb-2"><Hash className="inline h-4 w-4 mr-1"/>Invoice Number</label>
-                    <input id="invoice_number" name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                    <label htmlFor="part_number" className="block text-sm font-medium">Part Number</label>
+                    <input id="part_number" name="part_number" value={formData.part_number || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
                  </div>
-                 <div className="md:col-span-2">
-                    <label htmlFor="shop_name" className="block text-sm font-medium text-gray-700 mb-2"><Store className="inline h-4 w-4 mr-1"/>Shop Purchased From</label>
-                    <input id="shop_name" name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                 <div>
+                    <label htmlFor="invoice_number" className="block text-sm font-medium">Invoice Number</label>
+                    <input id="invoice_number" name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
+                 </div>
+                 <div>
+                    <label htmlFor="shop_name" className="block text-sm font-medium">Shop Purchased From</label>
+                    <input id="shop_name" name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1"/>
                  </div>
                </div>
             </div>
           )}
 
           <div className="flex space-x-4 pt-4">
-            <button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {isSubmitting ? 'Submitting...' : 'Submit Report'}
+            <button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 text-white py-2 rounded-lg">
+              Submit Report
             </button>
-            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 rounded-lg">
               Clear Form
             </button>
           </div>
