@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import Navigation from './components/Navigation';
 import SubmitReport from './components/SubmitReport';
 import SearchReports from './components/SearchReports';
-import UpdateReport from './components/UpdateReport';
+// UpdateReport is no longer needed
 import DeleteReport from './components/DeleteReport';
 import DataManagement from './components/DataManagement';
 import LoadingScreen from './components/LoadingScreen';
@@ -11,20 +11,11 @@ import LoadingScreen from './components/LoadingScreen';
 function App() {
   const [activeTab, setActiveTab] = useState('submit');
   const [isLoading, setIsLoading] = useState(true);
-  const [isFading, setIsFading] = useState(false); // New state to control the fade
+  const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    // Timer to start the fade-out animation
-    const fadeTimer = setTimeout(() => {
-      setIsFading(true);
-    }, 4500); // Starts fading at 4.5 seconds
-
-    // Timer to remove the component after the fade animation is complete
-    const unmountTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000); // Total time is 5 seconds
-
-    // Cleanup timers on component unmount
+    const fadeTimer = setTimeout(() => setIsFading(true), 4500);
+    const unmountTimer = setTimeout(() => setIsLoading(false), 5000);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(unmountTimer);
@@ -35,10 +26,9 @@ function App() {
     switch (activeTab) {
       case 'submit':
         return <SubmitReport />;
-      case 'search':
+      case 'search': // This now handles search and update
         return <SearchReports />;
-      case 'update':
-        return <UpdateReport />;
+      // The 'update' case is removed
       case 'delete':
         return <DeleteReport />;
       case 'data':
@@ -49,7 +39,6 @@ function App() {
   };
 
   if (isLoading) {
-    // Pass the isFading prop to the LoadingScreen
     return <LoadingScreen isFading={isFading} />;
   }
 
@@ -63,30 +52,7 @@ function App() {
         </div>
       </main>
       
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: '#4ade80',
-              secondary: '#fff',
-            },
-          },
-          error: {
-            duration: 4000,
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+      <Toaster position="top-right" />
     </div>
   );
 }
