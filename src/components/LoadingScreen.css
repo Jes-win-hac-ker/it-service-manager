@@ -1,1 +1,93 @@
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+.loading-content {
+  text-align: center;
+  position: relative;
+}
+
+.computer-logo {
+  stroke: #2563eb; /* text-blue-600 */
+  margin-bottom: 1rem;
+  width: 100px; /* Default size for mobile */
+  height: 100px;
+}
+
+.monitor-outline,
+.stand-base,
+.stand-neck,
+.screen-line-1,
+.screen-line-2,
+.screen-line-3 {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 1s ease-out forwards;
+}
+
+.stand-base {
+  animation-delay: 1s;
+}
+
+.stand-neck {
+  animation-delay: 1.2s;
+}
+
+.screen-line-1 {
+  animation-delay: 1.8s;
+}
+.screen-line-2 {
+  animation-delay: 2.2s;
+}
+.screen-line-3 {
+  animation-delay: 2.6s;
+}
+
+.loading-title {
+  font-size: 1.5rem; /* Default size for mobile */
+  font-weight: 600;
+  color: #374151;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 3s forwards;
+}
+
+.loading-subtitle {
+  color: #6b7280; /* text-gray-500 */
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 3.3s forwards;
+}
+
+/* Animation Definitions */
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Responsive Styles --- */
+/* For screens wider than 640px (tablets and desktops) */
+@media (min-width: 640px) {
+  .computer-logo {
+    width: 150px; /* Larger icon */
+    height: 150px;
+  }
+
+  .loading-title {
+    font-size: 2rem; /* Larger title */
+  }
+
+  .loading-subtitle {
+    font-size: 1.125rem; /* Larger subtitle */
+  }
+}
 
