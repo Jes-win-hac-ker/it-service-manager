@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save } from 'lucide-react';
-import { getReports, updateReport } from '../services/api';
+import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save, Trash2, AlertTriangle } from 'lucide-react';
+import { getReports, updateReport, deleteReport } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import { format, isValid } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -15,10 +15,12 @@ const SearchReports: React.FC = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // State for the edit modal
+  // State for modals
   const [reportToEdit, setReportToEdit] = useState<Report | null>(null);
+  const [reportToDelete, setReportToDelete] = useState<Report | null>(null);
   const [formData, setFormData] = useState<ReportFormData | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const statusOptions = [
     'Pending Diagnosis',
@@ -74,12 +76,27 @@ const SearchReports: React.FC = () => {
     try {
       await updateReport(reportToEdit.id, formData);
       toast.success("Report updated successfully!");
-      setReportToEdit(null); // Close modal
-      fetchReports(searchTerm, 0); // Refresh the list
+      setReportToEdit(null);
+      fetchReports(searchTerm, 0);
     } catch (error) {
       toast.error("Failed to update report.");
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!reportToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteReport(reportToDelete.id);
+      toast.success("Report deleted successfully!");
+      setReportToDelete(null);
+      fetchReports(searchTerm, 0); // Refresh the list
+    } catch (error) {
+      toast.error("Failed to delete report.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -116,7 +133,7 @@ const SearchReports: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
             <Search className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-900">Search & Update Reports</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Search, Update & Delete</h2>
         </div>
         <form onSubmit={handleSearchFormSubmit} className="relative mb-6">
           <input
@@ -169,10 +186,14 @@ const SearchReports: React.FC = () => {
                   </div>
                 </div>
                 <p className="mt-4 text-gray-700">{report.problem_description}</p>
-                <div className="flex justify-end mt-2">
+                <div className="flex justify-end items-center gap-2 mt-2">
                   <button onClick={() => openEditModal(report)} className="flex items-center gap-2 text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-200">
                     <Edit className="h-4 w-4" />
                     Edit
+                  </button>
+                  <button onClick={() => setReportToDelete(report)} className="flex items-center gap-2 text-sm bg-red-100 text-red-700 px-3 py-1 rounded-md hover:bg-red-200">
+                    <Trash2 className="h-4 w-4" />
+                    Delete
                   </button>
                 </div>
               </div>
@@ -231,6 +252,44 @@ const SearchReports: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {reportToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
+            <div className="flex items-start">
+              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <AlertTriangle className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Delete Report</h3>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to delete the report for "{reportToDelete.customer_name}"? This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                {isDeleting ? <Loader2 className="h-5 w-5 animate-spin"/> : 'Delete'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setReportToDelete(null)}
+                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
