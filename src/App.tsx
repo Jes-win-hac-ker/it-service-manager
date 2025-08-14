@@ -24,7 +24,7 @@ function App() {
     switch (activeTab) {
       case 'submit':
         return <SubmitReport />;
-      case 'search': // This now handles search, update, and delete
+      case 'search':
         return <SearchReports />;
       case 'data':
         return <DataManagement />;
@@ -38,7 +38,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
       <main className="py-8 px-4 sm:px-6 lg:px-8">
