@@ -58,7 +58,6 @@ const SubmitReport: React.FC = () => {
           if (Notification.permission === 'granted') {
             new Notification('IT Service Reminder', {
               body: `The report for ${formData.customer_name} (S/N: ${formData.serial_number}) is due for completion.`,
-              // You can add an icon here, e.g., icon: '/logo.png'
             });
           }
         }, delay);
@@ -158,4 +157,45 @@ const SubmitReport: React.FC = () => {
                  </div>
                  <div>
                     <label htmlFor="invoice_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Hash className="inline h-4 w-4 mr-1"/>Invoice Number</label>
-                    <input id="invoice_number" nam
+                    <input id="invoice_number" name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+                 <div>
+                    <label htmlFor="shop_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Store className="inline h-4 w-4 mr-1"/>Shop Purchased From</label>
+                    <input id="shop_name" name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+               </div>
+            </div>
+          )}
+
+          {showReminder && (
+            <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Set Reminder</h3>
+              <div>
+                <label htmlFor="reminder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reminder Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  id="reminder" 
+                  name="reminder" 
+                  value={reminderDateTime}
+                  onChange={(e) => setReminderDateTime(e.target.value)}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex space-x-4 pt-4">
+            <button type="submit" disabled={isSubmitting} className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+              {isSubmitting ? 'Submitting...' : 'Submit Report'}
+            </button>
+            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+              Clear Form
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default SubmitReport;
