@@ -11,6 +11,7 @@ export interface Report {
   invoice_number?: string;
   part_name?: string;
   shop_name?: string;
+  part_number?:string;
 }
 
 export type ReportFormData = Omit<Report, 'id' | 'created_at'>;
