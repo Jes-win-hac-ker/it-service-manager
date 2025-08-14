@@ -5,11 +5,11 @@
   justify-content: center;
   min-height: 100vh;
   background-color: #f9fafb; /* bg-gray-50 */
+  padding: 1rem; /* Add some padding for smaller screens */
 }
 
 .loading-content {
   text-align: center;
-  position: relative;
 }
 
 .computer-logo {
@@ -90,4 +90,3 @@
     font-size: 1.125rem; /* Larger subtitle */
   }
 }
-
