@@ -3,8 +3,6 @@ import { Toaster } from 'react-hot-toast';
 import Navigation from './components/Navigation';
 import SubmitReport from './components/SubmitReport';
 import SearchReports from './components/SearchReports';
-// UpdateReport is no longer needed
-import DeleteReport from './components/DeleteReport';
 import DataManagement from './components/DataManagement';
 import LoadingScreen from './components/LoadingScreen';
 
@@ -26,11 +24,8 @@ function App() {
     switch (activeTab) {
       case 'submit':
         return <SubmitReport />;
-      case 'search': // This now handles search and update
+      case 'search': // This now handles search, update, and delete
         return <SearchReports />;
-      // The 'update' case is removed
-      case 'delete':
-        return <DeleteReport />;
       case 'data':
         return <DataManagement />;
       default:
