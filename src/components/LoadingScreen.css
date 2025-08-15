@@ -42,21 +42,21 @@
   to { opacity: 1; }
 }
 
-/* Applying Animations */
+/* Applying Animations with slower delays */
 .loading-screen .paper-outline {
   animation: draw 1s ease-out forwards;
 }
 .loading-screen .paper-fold {
-  animation: draw 0.5s ease-out 0.8s forwards;
+  animation: draw 0.5s ease-out 1s forwards;
 }
 .loading-screen .line-1 {
-  animation: draw 0.4s ease-out 1.2s forwards;
+  animation: draw 0.5s ease-out 1.8s forwards;
 }
 .loading-screen .line-2 {
-  animation: draw 0.4s ease-out 1.5s forwards;
+  animation: draw 0.5s ease-out 2.3s forwards;
 }
 .loading-screen .line-3 {
-  animation: draw 0.3s ease-out 1.8s forwards;
+  animation: draw 0.5s ease-out 2.8s forwards;
 }
 
 .loading-title {
@@ -65,11 +65,11 @@
   font-weight: 600;
   color: #374151; /* text-gray-700 */
   opacity: 0;
-  animation: fadeIn 0.5s ease-in 2s forwards;
+  animation: fadeIn 0.5s ease-in 3.5s forwards;
 }
 
 .loading-subtitle {
   color: #6b7280; /* text-gray-500 */
   opacity: 0;
-  animation: fadeIn 0.5s ease-in 2.2s forwards;
+  animation: fadeIn 0.5s ease-in 3.7s forwards;
 }
