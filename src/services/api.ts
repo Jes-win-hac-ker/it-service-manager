@@ -1,7 +1,7 @@
 import { supabaseApiService } from './supabaseApi';
 import { Report, ReportFormData } from '../types/Report';
 
-// GET all reports, now with pagination parameters
+// GET all reports, with pagination parameters
 export const getReports = async (search?: string, page?: number, limit?: number): Promise<Report[]> => {
   return supabaseApiService.getAllReports(search, page, limit);
 };
