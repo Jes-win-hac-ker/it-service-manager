@@ -1,58 +1,27 @@
-export const supabaseApiService = {
-  // Add purchase
-  async addPurchase(purchaseData: PurchaseFormData) {
-    const { data, error } = await supabase
-      .from('purchases')
-      .insert([purchaseData]);
-    if (error) throw error;
-    return data;
-  },
+import { supabaseApiService } from './supabaseApi';
+import { Report, ReportFormData } from '../types/Report';
 
-  // Fetch all purchases
-  async getPurchases() {
-    const { data, error } = await supabase
-      .from('purchases')
-      .select('*')
-      .order('purchase_date', { ascending: false });
-    if (error) throw error;
-    return data;
-  },
+// GET all reports, with pagination parameters
+export const getReports = async (search?: string, page?: number, limit?: number): Promise<Report[]> => {
+  return supabaseApiService.getAllReports(search, page, limit);
+};
 
-  // Delete purchase by ID
-  async deletePurchase(id: number) {
-    const { data, error } = await supabase
-      .from('purchases')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
-    return data;
-  },
+// GET a single report by its ID
+export const getReportById = async (id: string): Promise<Report> => {
+  return supabaseApiService.getReportById(id);
+};
 
-  // ✅ Export all reports as JSON string
-  async exportData() {
-    const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return JSON.stringify(data, null, 2);
-  },
+// CREATE a new report
+export const addReport = async (reportData: ReportFormData): Promise<{ id: string; message: string }> => {
+  return supabaseApiService.createReport(reportData);
+};
 
-  // ✅ Import reports from JSON string
-  async importData(jsonString: string) {
-    let parsedData;
-    try {
-      parsedData = JSON.parse(jsonString);
-    } catch {
-      throw new Error('Invalid JSON format');
-    }
-    if (!Array.isArray(parsedData)) {
-      throw new Error('Imported data must be an array');
-    }
-    const { error } = await supabase
-      .from('reports')
-      .insert(parsedData);
-    if (error) throw error;
-    return { success: true };
-  }
+// UPDATE a report by its ID
+export const updateReport = async (id: string, reportData: ReportFormData): Promise<{ message: string }> => {
+  return supabaseApiService.updateReport(id, reportData);
+};
+
+// DELETE a report by its ID
+export const deleteReport = async (id: string): Promise<{ message: string }> => {
+  return supabaseApiService.deleteReport(id);
 };
