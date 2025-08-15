@@ -35,7 +35,7 @@ class SupabaseApiService {
       .order('created_at', { ascending: false });
 
     if (search) {
-      query = query.or(`serial_number.ilike.%${search}%,customer_name.ilike.%${search}%,phone_number.ilike.%${search}%`);
+      query = query.or(`serial_number.ilike.%${search}%,customer_name.ilike.%${search}%,phone_number.ilike.%${search}%,part_number.ilike.%${search}%`);
     }
 
     const from = page * limit;
