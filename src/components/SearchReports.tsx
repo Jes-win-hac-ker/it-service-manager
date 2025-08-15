@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save, Trash2, AlertTriangle, Store, Package, Bell } from 'lucide-react';
+import { Search, Calendar, Phone, User, Hash, Loader2, X, CheckCircle2, Zap, Edit, Save, Trash2, Bell, Package, Store } from 'lucide-react';
 import { getReports, updateReport, deleteReport } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import { format, isValid } from 'date-fns';
@@ -15,14 +15,11 @@ const SearchReports: React.FC = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // State for modals
   const [reportToEdit, setReportToEdit] = useState<Report | null>(null);
   const [reportToDelete, setReportToDelete] = useState<Report | null>(null);
   const [formData, setFormData] = useState<ReportFormData | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  
-  // State for reminder in edit modal
   const [showReminder, setShowReminder] = useState(false);
   const [reminderDateTime, setReminderDateTime] = useState('');
 
@@ -58,22 +55,12 @@ const SearchReports: React.FC = () => {
     }, 500);
     return () => clearTimeout(handler);
   }, [searchTerm, fetchReports]);
-  
-  // Ask for notification permission
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
 
   const openEditModal = (report: Report) => {
     setReportToEdit(report);
-    setShowReminder(false); // Reset reminder view
-    setReminderDateTime(''); // Reset reminder time
-    const formatDateForInput = (date?: string) => {
-        if (!date) return '';
-        return isValid(new Date(date)) ? format(new Date(date), 'yyyy-MM-dd') : '';
-    }
+    setShowReminder(false);
+    setReminderDateTime('');
+    const formatDateForInput = (date?: string) => (!date ? '' : isValid(new Date(date)) ? format(new Date(date), 'yyyy-MM-dd') : '');
     setFormData({
       serial_number: report.serial_number,
       customer_name: report.customer_name,
@@ -95,25 +82,7 @@ const SearchReports: React.FC = () => {
     setIsUpdating(true);
     try {
       await updateReport(reportToEdit.id, formData);
-
-      // Schedule notification if reminder is set
-      if (showReminder && reminderDateTime && new Date(reminderDateTime) > new Date()) {
-        const reminderTime = new Date(reminderDateTime).getTime();
-        const now = new Date().getTime();
-        const delay = reminderTime - now;
-
-        setTimeout(() => {
-          if (Notification.permission === 'granted') {
-            new Notification('IT Service Reminder', {
-              body: `The report for ${formData.customer_name} (S/N: ${formData.serial_number}) is due for completion.`,
-            });
-          }
-        }, delay);
-        toast.success('Report updated and reminder set!');
-      } else {
-        toast.success("Report updated successfully!");
-      }
-
+      toast.success("Report updated successfully!");
       setReportToEdit(null);
       fetchReports(searchTerm, 0);
     } catch (error) {
@@ -143,10 +112,8 @@ const SearchReports: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => (prev ? { ...prev, [name]: value } : null));
   };
-  
-  const handleSearchFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+
+  const handleSearchFormSubmit = (e: React.FormEvent) => e.preventDefault();
 
   const loadMore = () => {
     const nextPage = page + 1;
@@ -159,20 +126,16 @@ const SearchReports: React.FC = () => {
     return isValid(d) ? format(d, 'PPP') : 'Invalid Date';
   };
 
-  const getStatusIndicator = (status: string) => {
-    if (status === 'Returned to Customer') {
-      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-    }
-    return <Zap className="h-5 w-5 text-yellow-500" />;
-  };
+  const getStatusIndicator = (status: string) => status === 'Returned to Customer' ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <Zap className="h-5 w-5 text-yellow-500" />;
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
-            <Search className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
+          <Search className="h-6 w-6 text-blue-600" />
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
         </div>
+
         <form onSubmit={handleSearchFormSubmit} className="relative mb-6">
           <input
             type="text"
@@ -236,7 +199,7 @@ const SearchReports: React.FC = () => {
             <p className="text-center text-gray-500 dark:text-gray-400 py-10">No reports found.</p>
           )}
         </div>
-        
+
         {hasMore && !isLoading && (
           <div className="mt-6 text-center">
             <button onClick={loadMore} disabled={isLoadingMore} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-6 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50">
@@ -246,77 +209,10 @@ const SearchReports: React.FC = () => {
         )}
       </div>
 
+      {/* Edit Modal */}
       {reportToEdit && formData && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Report</h2>
             <form onSubmit={handleUpdate} className="space-y-4">
-              {/* Existing form fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                  <select name="status" value={formData.status} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    {statusOptions.map(opt => <option key={opt}>{opt}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Name</label>
-                  <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
-                </div>
-              </div>
-
-              {/* Optional Reminder Section */}
-              {!showReminder && (
-                <button type="button" onClick={() => setShowReminder(true)} className="w-full flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700">
-                  <Bell className="h-5 w-5" />
-                  Set Completion Reminder (Optional)
-                </button>
-              )}
-
-              {showReminder && (
-                <div className="border-t dark:border-gray-700 pt-4">
-                  <label htmlFor="reminder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reminder Date & Time</label>
-                  <input 
-                    type="datetime-local" 
-                    id="reminder" 
-                    name="reminder" 
-                    value={reminderDateTime}
-                    onChange={(e) => setReminderDateTime(e.target.value)}
-                    className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-              )}
-
-              <div className="flex justify-end gap-4 pt-4">
-                <button type="button" onClick={() => setReportToEdit(null)} className="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-lg">Cancel</button>
-                <button type="submit" disabled={isUpdating} className="bg-green-600 text-white py-2 px-4 rounded-lg flex items-center gap-2">
-                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {reportToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Report</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Are you sure you want to delete the report for "{reportToDelete.customer_name}"?</p>
-            <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <button type="button" onClick={handleDelete} disabled={isDeleting} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm">
-                {isDeleting ? 'Deleting...' : 'Delete'}
-              </button>
-              <button type="button" onClick={() => setReportToDelete(null)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto sm:text-sm">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default SearchReports;
+              <div className="grid grid-cols-1 md:gri
