@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Edit, Save, Search, User, Phone, Hash, Loader2, ChevronLeft, Zap } from 'lucide-react';
+import { Edit, Save, Search, Loader2, ChevronLeft } from 'lucide-react';
 import { getReports, updateReport } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import toast from 'react-hot-toast';
@@ -43,6 +43,7 @@ const UpdateReport: React.FC = () => {
       }
     } catch (error) {
       toast.error("Failed to search for reports.");
+      console.error(error);
     } finally {
       setIsSearching(false);
     }
@@ -50,8 +51,8 @@ const UpdateReport: React.FC = () => {
 
   const selectReportForEditing = (report: Report) => {
     setCurrentReport(report);
-    const formattedDate = isValid(new Date(report.date_given)) 
-      ? format(new Date(report.date_given), 'yyyy-MM-dd') 
+    const formattedDate = isValid(new Date(report.date_given))
+      ? format(new Date(report.date_given), 'yyyy-MM-dd')
       : '';
     setFormData({
       serial_number: report.serial_number,
@@ -67,30 +68,31 @@ const UpdateReport: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!formData) return;
     const { name, value } = e.target;
-    setFormData(prev => (prev ? { ...prev, [name]: value } : null));
+    setFormData(prev => prev ? { ...prev, [name]: value } : null);
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData || !currentReport) return;
-    
+
     setIsUpdating(true);
     try {
       await updateReport(currentReport.id, formData);
       toast.success("Report updated successfully!");
     } catch (error) {
       toast.error("Failed to update report.");
+      console.error(error);
     } finally {
       setIsUpdating(false);
     }
   };
-  
+
   const clearSelection = () => {
     setCurrentReport(null);
     setFormData(null);
     setSearchResults([]);
     setSearchTerm('');
-  }
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -108,6 +110,7 @@ const UpdateReport: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-grow px-3 py-2 border border-gray-300 rounded-lg"
                 placeholder="Search by Name, Phone, or Serial #"
+                disabled={isSearching}
               />
               <button type="submit" disabled={isSearching} className="bg-blue-600 text-white p-2 rounded-lg">
                 {isSearching ? <Loader2 className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
@@ -131,7 +134,7 @@ const UpdateReport: React.FC = () => {
         {currentReport && formData && (
           <div>
             <button onClick={clearSelection} className="flex items-center text-sm text-blue-600 hover:underline mb-4">
-                <ChevronLeft className="h-4 w-4" /> Back to Search
+              <ChevronLeft className="h-4 w-4" /> Back to Search
             </button>
             <form onSubmit={handleUpdate} className="space-y-6 border-t pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -148,6 +151,10 @@ const UpdateReport: React.FC = () => {
                 <div>
                   <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                   <input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
+                </div>
+                <div className="md:col-span-2">
+                  <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 mb-2">Date Given</label>
+                  <input id="date_given" type="date" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg"/>
                 </div>
               </div>
               <div>
