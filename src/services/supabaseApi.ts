@@ -1,28 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Environment variables for Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Type for purchases based on your PurchaseManager form
-export interface PurchaseFormData {
-  invoice_number: string;
-  product_name: string;
-  product_serial_number: string;
-  shop_name: string;
-  purchase_date: string; // ISO date string
-  customer_name: string;
-}
-
 export const supabaseApiService = {
   // Add purchase
   async addPurchase(purchaseData: PurchaseFormData) {
     const { data, error } = await supabase
       .from('purchases')
       .insert([purchaseData]);
-
     if (error) throw error;
     return data;
   },
@@ -33,7 +14,6 @@ export const supabaseApiService = {
       .from('purchases')
       .select('*')
       .order('purchase_date', { ascending: false });
-
     if (error) throw error;
     return data;
   },
@@ -44,8 +24,35 @@ export const supabaseApiService = {
       .from('purchases')
       .delete()
       .eq('id', id);
-
     if (error) throw error;
     return data;
+  },
+
+  // ✅ Export all reports as JSON string
+  async exportData() {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return JSON.stringify(data, null, 2);
+  },
+
+  // ✅ Import reports from JSON string
+  async importData(jsonString: string) {
+    let parsedData;
+    try {
+      parsedData = JSON.parse(jsonString);
+    } catch {
+      throw new Error('Invalid JSON format');
+    }
+    if (!Array.isArray(parsedData)) {
+      throw new Error('Imported data must be an array');
+    }
+    const { error } = await supabase
+      .from('reports')
+      .insert(parsedData);
+    if (error) throw error;
+    return { success: true };
   }
 };
