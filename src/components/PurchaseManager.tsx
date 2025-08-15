@@ -94,4 +94,69 @@ const PurchaseManager: React.FC = () => {
             <PlusCircle className="h-6 w-6 text-blue-600" />
             <h2 className="text-2xl font-bold text-gray-900">Add Purchase</h2>
           </div>
-          <form onSubmit={handleSubmit
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Customer Name *</label>
+              <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" placeholder="Link to a customer" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Product Name</label>
+              <input name="product_name" value={formData.product_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Invoice #</label>
+              <input name="invoice_number" value={formData.invoice_number} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Product Serial #</label>
+              <input name="product_serial_number" value={formData.product_serial_number} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Shop Name</label>
+              <input name="shop_name" value={formData.shop_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Purchase Date</label>
+              <input type="date" name="purchase_date" value={formData.purchase_date} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1" required />
+            </div>
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+              Add Record
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* List Section */}
+      <div className="md:col-span-2">
+        <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Purchase History</h2>
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input 
+                type="text"
+                placeholder="Search by customer name..."
+                value={historySearchTerm}
+                onChange={(e) => setHistorySearchTerm(e.target.value)}
+                className="w-full p-2 pl-10 border rounded-lg"
+              />
+            </div>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                {isLoading ? <p>Loading...</p> : filteredPurchases.map(p => (
+                    <div key={p.id} className="border p-4 rounded-lg">
+                        <p className="font-bold flex items-center"><Package className="h-4 w-4 mr-2" />{p.product_name} <span className="ml-auto text-sm font-normal text-gray-500">{p.customer_name}</span></p>
+                        <div className="text-sm text-gray-600 grid grid-cols-2 gap-2 mt-2">
+                            <p className="flex items-center"><Hash className="h-4 w-4 mr-2" />{p.invoice_number}</p>
+                            <p className="flex items-center"><Store className="h-4 w-4 mr-2" />{p.shop_name}</p>
+                            <p className="flex items-center"><Calendar className="h-4 w-4 mr-2" />{formatDate(p.purchase_date)}</p>
+                            <p className="flex items-center"><Hash className="h-4 w-4 mr-2" />S/N: {p.product_serial_number}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PurchaseManager;
