@@ -28,7 +28,6 @@ const DeleteReport: React.FC = () => {
 
   const handleDelete = async () => {
     if (!reportToDelete) return;
-
     setIsDeleting(true);
     try {
       await deleteReport(reportToDelete.id);
