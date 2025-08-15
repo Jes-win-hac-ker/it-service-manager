@@ -1,92 +1,80 @@
+/* Full-screen loading container */
 .loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #121212; /* Dark background */
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-color: #f9fafb; /* bg-gray-50 */
-  padding: 1rem; /* Add some padding for smaller screens */
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  opacity: 1;
+  visibility: visible;
 }
 
+/* Fade-out effect */
+.loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Loading content wrapper */
 .loading-content {
   text-align: center;
+  color: white;
 }
 
+/* Computer logo styling */
 .computer-logo {
-  stroke: #2563eb; /* text-blue-600 */
-  margin-bottom: 1rem;
-  width: 100px; /* Default size for mobile */
-  height: 100px;
+  color: #00bcd4;
+  animation: float 3s ease-in-out infinite;
 }
 
-.monitor-outline,
-.stand-base,
-.stand-neck,
+/* Floating animation for the logo */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Title */
+.loading-title {
+  font-size: 1.8rem;
+  margin-top: 20px;
+}
+
+/* Subtitle */
+.loading-subtitle {
+  font-size: 1rem;
+  color: #bbbbbb;
+  margin-top: 5px;
+}
+
+/* Screen animation lines */
 .screen-line-1,
 .screen-line-2,
 .screen-line-3 {
+  stroke: #00bcd4;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-  animation: draw 1s ease-out forwards;
+  animation: draw-line 1.5s linear infinite;
 }
 
-.stand-base {
-  animation-delay: 1s;
-}
-
-.stand-neck {
-  animation-delay: 1.2s;
-}
-
-.screen-line-1 {
-  animation-delay: 1.8s;
-}
-.screen-line-2 {
-  animation-delay: 2.2s;
-}
-.screen-line-3 {
-  animation-delay: 2.6s;
-}
-
-.loading-title {
-  font-size: 1.5rem; /* Default size for mobile */
-  font-weight: 600;
-  color: #374151;
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in 3s forwards;
-}
-
-.loading-subtitle {
-  color: #6b7280; /* text-gray-500 */
-  opacity: 0;
-  animation: fadeIn 0.5s ease-in 3.3s forwards;
-}
-
-/* Animation Definitions */
-@keyframes draw {
-  to {
+/* Line animation */
+@keyframes draw-line {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  50% {
     stroke-dashoffset: 0;
   }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* --- Responsive Styles --- */
-/* For screens wider than 640px (tablets and desktops) */
-@media (min-width: 640px) {
-  .computer-logo {
-    width: 150px; /* Larger icon */
-    height: 150px;
-  }
-
-  .loading-title {
-    font-size: 2rem; /* Larger title */
-  }
-
-  .loading-subtitle {
-    font-size: 1.125rem; /* Larger subtitle */
+  100% {
+    stroke-dashoffset: 100;
   }
 }
