@@ -186,7 +186,7 @@ const SearchReports: React.FC = () => {
                 {(report.part_name || report.invoice_number || report.shop_name || report.part_number) && (
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 space-y-1">
                     {report.part_name && <p className="flex items-center"><Package className="h-4 w-4 mr-2"/>Part: {report.part_name}</p>}
-                    {report.part_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Part #: {report.part_number}</p>}
+                    {report.part_number && <p className="flex items-center">Part #: {report.part_number}</p>}
                     {report.invoice_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Invoice: {report.invoice_number}</p>}
                     {report.shop_name && <p className="flex items-center"><Store className="h-4 w-4 mr-2"/>Shop: {report.shop_name}</p>}
                   </div>
