@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Navigation from './components/Navigation';
 import SubmitReport from './components/SubmitReport';
-import SearchReports from './components/SearchReports'; // Corrected import
+import SearchReports from './components/SearchReports'; // Corrected: Uses default import
 import DataManagement from './components/DataManagement';
 import LoadingScreen from './components/LoadingScreen';
 import { ThemeProvider } from './contexts/ThemeContext';
