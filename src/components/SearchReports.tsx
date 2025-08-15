@@ -186,7 +186,7 @@ const SearchReports: React.FC = () => {
                 {(report.part_name || report.invoice_number || report.shop_name || report.part_number) && (
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 space-y-1">
                     {report.part_name && <p className="flex items-center"><Package className="h-4 w-4 mr-2"/>Part: {report.part_name}</p>}
-                    {report.part_number && <p className="flex items-center">Part #: {report.part_number}</p>}
+                    {report.part_number && <p className="flex items-center">Part ID: {report.part_number}</p>}
                     {report.invoice_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Invoice: {report.invoice_number}</p>}
                     {report.shop_name && <p className="flex items-center"><Store className="h-4 w-4 mr-2"/>Shop: {report.shop_name}</p>}
                   </div>
@@ -236,7 +236,7 @@ const SearchReports: React.FC = () => {
                   <input name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Part Number</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Part ID</label>
                   <input name="part_number" value={formData.part_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
