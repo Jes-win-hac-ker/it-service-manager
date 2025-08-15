@@ -215,4 +215,50 @@ const SearchReports: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Report</h2>
             <form onSubmit={handleUpdate} className="space-y-4">
-              <div className="grid grid-cols-1 md:gri
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                  <select name="status" value={formData.status} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    {statusOptions.map(opt => <option key={opt}>{opt}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Name</label>
+                  <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border rounded-lg mt-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4 pt-4">
+                <button type="button" onClick={() => setReportToEdit(null)} className="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-lg">Cancel</button>
+                <button type="submit" disabled={isUpdating} className="bg-green-600 text-white py-2 px-4 rounded-lg flex items-center gap-2">
+                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {reportToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Report</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Are you sure you want to delete the report for "{reportToDelete.customer_name}"?</p>
+            <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+              <button type="button" onClick={handleDelete} disabled={isDeleting} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm">
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+              <button type="button" onClick={() => setReportToDelete(null)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto sm:text-sm">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SearchReports;
