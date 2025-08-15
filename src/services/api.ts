@@ -1,9 +1,9 @@
 import { supabaseApiService } from './supabaseApi';
 import { Report, ReportFormData } from '../types/Report';
 
-// GET all reports, optionally with a search term
-export const getReports = async (search?: string): Promise<Report[]> => {
-  return supabaseApiService.getAllReports(search);
+// GET all reports, now with pagination parameters
+export const getReports = async (search?: string, page?: number, limit?: number): Promise<Report[]> => {
+  return supabaseApiService.getAllReports(search, page, limit);
 };
 
 // GET a single report by its ID
