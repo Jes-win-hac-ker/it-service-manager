@@ -125,4 +125,88 @@ const SubmitReport: React.FC = () => {
               <input type="tel" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg" placeholder="Enter phone number" required />
             </div>
             <div>
-              <label htmlFor="date_given" className="block te
+              <label htmlFor="date_given" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date Given *</label>
+              <input type="date" id="date_given" name="date_given" value={formData.date_given} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg" required />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="problem_description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Problem Description *</label>
+            <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg" placeholder="Describe the problem..." required />
+          </div>
+
+          <div className="space-y-2">
+            {!showExtraFields && (
+              <button type="button" onClick={() => setShowExtraFields(true)} className="w-full flex items-center justify-center gap-2 text-brand-grey py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                <PlusCircle className="h-5 w-5" />
+                Add Part / Invoice Details (Optional)
+              </button>
+            )}
+            {!showReminder && (
+              <button type="button" onClick={handleSetReminderClick} className="w-full flex items-center justify-center gap-2 text-brand-grey py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Bell className="h-5 w-5" />
+                Set Completion Reminder (Optional)
+              </button>
+            )}
+          </div>
+
+          {showExtraFields && (
+            <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+               <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Part & Invoice Details</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label htmlFor="part_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Package className="inline h-4 w-4 mr-1"/>Part Name</label>
+                    <input id="part_name" name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+                 <div>
+                    <label htmlFor="part_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Hash className="inline h-4 w-4 mr-1"/>Part Number</label>
+                    <input id="part_number" name="part_number" value={formData.part_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+                 <div>
+                    <label htmlFor="invoice_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Hash className="inline h-4 w-4 mr-1"/>Invoice Number</label>
+                    <input id="invoice_number" name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+                 <div>
+                    <label htmlFor="shop_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"><Store className="inline h-4 w-4 mr-1"/>Shop Purchased From</label>
+                    <input id="shop_name" name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"/>
+                 </div>
+               </div>
+            </div>
+          )}
+
+          {showReminder && (
+            <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Set Reminder</h3>
+              <div>
+                <label htmlFor="reminder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reminder Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  id="reminder" 
+                  name="reminder" 
+                  value={reminderDateTime}
+                  onChange={(e) => setReminderDateTime(e.target.value)}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex space-x-4 pt-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 bg-brand-grey text-white py-2 px-4 rounded-lg hover:bg-brand-grey-light disabled:opacity-50"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Report'}
+            </button>
+            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+              Clear Form
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default SubmitReport;
