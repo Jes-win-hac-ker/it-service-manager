@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Navigation from './components/Navigation';
 import SubmitReport from './components/SubmitReport';
-import SearchReports from './components/SearchReports'; // Corrected: This is now a default import
+import SearchReports from './components/SearchReports';
 import DataManagement from './components/DataManagement';
 import LoadingScreen from './components/LoadingScreen';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -13,8 +13,8 @@ function App() {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setIsFading(true), 4500);
-    const unmountTimer = setTimeout(() => setIsLoading(false), 5000);
+    const fadeTimer = setTimeout(() => setIsFading(true), 4500); // Start fade at 4.5s
+    const unmountTimer = setTimeout(() => setIsLoading(false), 5000); // Remove after 5s
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(unmountTimer);
