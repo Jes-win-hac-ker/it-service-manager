@@ -114,22 +114,4 @@ class SupabaseApiService {
 
   // --- PURCHASE FUNCTIONS ---
   async getPurchases(): Promise<Purchase[]> {
-    const { data, error } = await supabase.from('purchases').select('*').order('purchase_date', { ascending: false });
-    if (error) {
-      console.error('Error fetching purchases:', error);
-      throw error;
-    }
-    return data || [];
-  }
-
-  async addPurchase(purchaseData: PurchaseFormData): Promise<Purchase> {
-    const { data, error } = await supabase.from('purchases').insert([purchaseData]).select().single();
-    if (error) {
-      console.error('Error adding purchase:', error);
-      throw error;
-    }
-    return data;
-  }
-}
-
-export const supabaseApiService = new SupabaseApiService();
+    const { da
