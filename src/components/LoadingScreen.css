@@ -4,7 +4,8 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f9fafb; /* bg-gray-50 */
+  /* Changed background to a dark grey */
+  background-color: #3a3a3a; 
   opacity: 1;
   transition: opacity 0.5s ease-out; 
 }
@@ -18,9 +19,10 @@
 }
 
 .computer-logo {
-  stroke: #2563eb; /* text-blue-600 */
+  /* Changed icon color to a light grey for contrast */
+  stroke: #e5e7eb; 
   margin-bottom: 1rem;
-  width: 100px; /* Default size for mobile */
+  width: 100px;
   height: 100px;
 }
 
@@ -54,15 +56,17 @@
 }
 
 .loading-title {
-  font-size: 1.5rem; /* Default size for mobile */
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #374151;
+  /* Changed text color to light grey */
+  color: #f9fafb;
   opacity: 0;
   animation: fadeIn 0.5s ease-in 3s forwards;
 }
 
 .loading-subtitle {
-  color: #6b7280; /* text-gray-500 */
+  /* Changed text color to a lighter grey */
+  color: #d1d5db;
   opacity: 0;
   animation: fadeIn 0.5s ease-in 3.3s forwards;
 }
@@ -80,18 +84,17 @@
 }
 
 /* --- Responsive Styles --- */
-/* For screens wider than 640px (tablets and desktops) */
 @media (min-width: 640px) {
   .computer-logo {
-    width: 150px; /* Larger icon */
+    width: 150px;
     height: 150px;
   }
 
   .loading-title {
-    font-size: 2rem; /* Larger title */
+    font-size: 2rem;
   }
 
   .loading-subtitle {
-    font-size: 1.125rem; /* Larger subtitle */
+    font-size: 1.125rem;
   }
 }
