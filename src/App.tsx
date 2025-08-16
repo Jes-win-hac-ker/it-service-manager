@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import Navigation from './components/Navigation';
+import Header from './components/Header'; // Import new Header
+import BottomNav from './components/BottomNav'; // Import new BottomNav
 import SubmitReport from './components/SubmitReport';
 import SearchReports from './components/SearchReports';
 import DataManagement from './components/DataManagement';
@@ -13,8 +14,8 @@ function App() {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setIsFading(true), 4500); // Start fade at 4.5s
-    const unmountTimer = setTimeout(() => setIsLoading(false), 5000); // Remove after 5s
+    const fadeTimer = setTimeout(() => setIsFading(true), 4500);
+    const unmountTimer = setTimeout(() => setIsLoading(false), 5000);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(unmountTimer);
@@ -40,13 +41,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header />
       
-      <main className="py-8 px-4 sm:px-6 lg:px-8">
+      <main className="py-8 px-4 sm:px-6 lg:px-8 pb-24"> {/* Added bottom padding */}
         <div className="max-w-7xl mx-auto">
           {renderActiveComponent()}
         </div>
       </main>
+      
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
       
       <Toaster position="top-right" />
     </div>
