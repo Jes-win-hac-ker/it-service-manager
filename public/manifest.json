@@ -1,10 +1,11 @@
 {
   "name": "IT Service Manager",
   "short_name": "ServiceMgr",
-  "display": "standalone",
+  "description": "An application to manage IT service reports.",
   "start_url": ".",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "display": "standalone",
+  "background_color": "#454545",
+  "theme_color": "#454545",
   "icons": [
     {
       "src": "icon-192x192.png",
