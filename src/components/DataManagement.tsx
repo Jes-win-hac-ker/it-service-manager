@@ -50,7 +50,58 @@ const DataManagement: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* ... JSX for the component ... */}
+      <div className="bg-white dark:bg-brand-grey-dark rounded-lg shadow-md p-6">
+        <div className="flex items-center space-x-2 mb-6">
+          <Database className="h-6 w-6 text-brand-grey dark:text-gray-200" />
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Data Management</h2>
+        </div>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between bg-gray-50 dark:bg-brand-grey p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white">Export Data</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Download all reports as a JSON file.</p>
+            </div>
+            <button onClick={handleExport} disabled={isBusy} className="bg-brand-grey text-white py-2 px-4 rounded-lg hover:bg-brand-grey-light disabled:opacity-50 flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              <span>Export</span>
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between bg-gray-50 dark:bg-brand-grey p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white">Import Data</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Import reports from a JSON file.</p>
+            </div>
+            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2">
+               <Upload className="h-4 w-4" />
+              <span>Import</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showImportDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-brand-grey-dark rounded-lg shadow-xl max-w-2xl w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Import Data</h3>
+            <textarea
+              value={importData}
+              onChange={(e) => setImportData(e.target.value)}
+              className="w-full h-40 p-2 border rounded-lg dark:bg-brand-grey dark:border-brand-grey"
+              placeholder="Paste your exported JSON data here..."
+            />
+            <div className="flex space-x-3 mt-4">
+              <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Import'}
+              </button>
+              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 dark:bg-brand-grey text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-400 dark:hover:bg-brand-grey-light">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
