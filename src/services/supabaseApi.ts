@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import { Report, ReportFormData } from '../types/Report';
 
 // Define types for Purchase data as well
-// NOTE: You may need to create a Purchase.ts type definition file for this
 interface Purchase {
   id: string;
   created_at: string;
