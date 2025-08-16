@@ -1,6 +1,6 @@
 {
   "name": "IT Service Manager",
-  "short_name": "Report manager",
+  "short_name": "IT Service Manager",
   "description": "An application to manage IT service reports.",
   "start_url": ".",
   "display": "standalone",
