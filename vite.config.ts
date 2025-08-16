@@ -31,11 +31,4 @@ export default defineConfig({
     })
   ],
 
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  // Add this base property
-  base: '/it-service-manager/', 
-  plugins: [react()],
-
 })
