@@ -4,14 +4,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f9fafb; /* Light mode background */
+  background-color: #f9fafb; /* bg-gray-50 */
   opacity: 1;
   transition: opacity 0.5s ease-out; 
-}
-
-/* --- Dark Mode Styles --- */
-html.dark .loading-screen {
-  background-color: #3a3a3a; /* brand-grey-dark */
 }
 
 .loading-screen.fade-out {
@@ -23,17 +18,11 @@ html.dark .loading-screen {
 }
 
 .computer-logo {
-  stroke: #454545; /* brand-grey */
+  stroke: #2563eb; /* text-blue-600 */
   margin-bottom: 1rem;
-  width: 100px;
+  width: 100px; /* Default size for mobile */
   height: 100px;
 }
-
-html.dark .computer-logo {
-  stroke: #e5e7eb; /* A light grey for contrast in dark mode */
-}
-
-/* ... (rest of the animation keyframes and rules remain the same) ... */
 
 .monitor-outline,
 .stand-base,
@@ -65,27 +54,20 @@ html.dark .computer-logo {
 }
 
 .loading-title {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Default size for mobile */
   font-weight: 600;
   color: #374151;
   opacity: 0;
   animation: fadeIn 0.5s ease-in 3s forwards;
 }
 
-html.dark .loading-title {
-  color: #f9fafb; /* Lighter text for dark mode */
-}
-
 .loading-subtitle {
-  color: #6b7280;
+  color: #6b7280; /* text-gray-500 */
   opacity: 0;
   animation: fadeIn 0.5s ease-in 3.3s forwards;
 }
 
-html.dark .loading-subtitle {
-  color: #d1d5db; /* Lighter text for dark mode */
-}
-
+/* Animation Definitions */
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
@@ -97,17 +79,19 @@ html.dark .loading-subtitle {
   to { opacity: 1; }
 }
 
+/* --- Responsive Styles --- */
+/* For screens wider than 640px (tablets and desktops) */
 @media (min-width: 640px) {
   .computer-logo {
-    width: 150px;
+    width: 150px; /* Larger icon */
     height: 150px;
   }
 
   .loading-title {
-    font-size: 2rem;
+    font-size: 2rem; /* Larger title */
   }
 
   .loading-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.125rem; /* Larger subtitle */
   }
 }
