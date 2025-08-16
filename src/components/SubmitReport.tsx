@@ -93,13 +93,6 @@ const SubmitReport: React.FC = () => {
             <textarea id="problem_description" name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={4} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg" placeholder="Describe the problem..." required />
           </div>
 
-          {!showExtraFields && (
-            <button type="button" onClick={() => setShowExtraFields(true)} className="w-full flex items-center justify-center gap-2 text-brand-grey py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-              <PlusCircle className="h-5 w-5" />
-              Add Part / Invoice Details (Optional)
-            </button>
-          )}
-
           {showExtraFields && (
             <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Part & Invoice Details</h3>
@@ -132,9 +125,25 @@ const SubmitReport: React.FC = () => {
             >
               {isSubmitting ? 'Submitting...' : 'Submit Report'}
             </button>
-            <button type="button" onClick={handleClear} className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
-              Clear Form
-            </button>
+            
+            {!showExtraFields ? (
+              <button 
+                type="button" 
+                onClick={() => setShowExtraFields(true)} 
+                className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2"
+              >
+                <PlusCircle className="h-5 w-5" />
+                Add Parts
+              </button>
+            ) : (
+              <button 
+                type="button" 
+                onClick={handleClear} 
+                className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
+              >
+                Clear Form
+              </button>
+            )}
           </div>
         </form>
       </div>
