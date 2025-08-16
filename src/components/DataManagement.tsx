@@ -1,45 +1,56 @@
 import React, { useState } from 'react';
 import { Download, Upload, Database, Loader2 } from 'lucide-react';
-// ... other imports
+import { supabaseApiService } from '../services/supabaseApi';
+import toast from 'react-hot-toast';
 
 const DataManagement: React.FC = () => {
-  // ... (state and functions remain the same)
+  const [importData, setImportData] = useState('');
+  const [isBusy, setIsBusy] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
+
+  const handleExport = async () => {
+    setIsBusy(true);
+    toast.loading('Exporting data...');
+    try {
+      const data = await supabaseApiService.exportData();
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `it-service-reports-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.dismiss();
+      toast.success('Data exported successfully!');
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Failed to export data');
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleImport = async () => {
+    setIsBusy(true);
+    toast.loading('Importing data...');
+    try {
+      await supabaseApiService.importData(importData);
+      toast.dismiss();
+      toast.success('Data imported successfully! The page will now reload.');
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Failed to import data.');
+    } finally {
+      setIsBusy(false);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <div className="flex items-center space-x-2 mb-6">
-          <Database className="h-6 w-6 text-brand-grey" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Data Management</h2>
-        </div>
-        
-        <div className="space-y-4">
-          {/* Export Row */}
-          <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Export Data</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">Download all reports as a JSON file.</p>
-            </div>
-            <button onClick={handleExport} disabled={isBusy} className="bg-brand-grey text-white py-2 px-4 rounded-lg hover:bg-brand-grey-light disabled:opacity-50 flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              <span>Export</span>
-            </button>
-          </div>
-
-          {/* Import Row */}
-          <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Import Data</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">Import reports from a JSON file.</p>
-            </div>
-            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2">
-               <Upload className="h-4 w-4" />
-              <span>Import</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      {/* ... Import Dialog ... */}
+      {/* ... JSX for the component ... */}
     </div>
   );
 };
