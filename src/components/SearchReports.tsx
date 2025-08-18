@@ -148,7 +148,7 @@ const SearchReports: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-brand-grey bg-white dark:bg-brand-grey text-gray-900 dark:text-white rounded-lg"
-            placeholder="Search by Serial #, Name, or Phone..."
+            placeholder="Search by Name, Phone, S/N, Part, or Status..."
           />
           {searchTerm && (
             <button 
