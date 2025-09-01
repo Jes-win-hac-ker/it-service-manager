@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-<<<<<<< HEAD
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
@@ -31,12 +30,5 @@ export default defineConfig({
       }
     })
   ],
-=======
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  // Add this base property
-  base: '/it-service-manager/', 
-  plugins: [react()],
->>>>>>> edcdf805ad0de5fee9fadf9b15d02abcfc08bed8
 })

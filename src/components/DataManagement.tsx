@@ -27,7 +27,6 @@ const DataManagement: React.FC = () => {
     } catch (error) {
       toast.dismiss();
       toast.error('Failed to export data');
-      console.error("Export Error:", error);
     } finally {
       setIsBusy(false);
     }
@@ -40,64 +39,63 @@ const DataManagement: React.FC = () => {
       await supabaseApiService.importData(importData);
       toast.dismiss();
       toast.success('Data imported successfully! The page will now reload.');
-      setImportData('');
-      setShowImportDialog(false);
-      // Refresh the page to show imported data
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
       toast.dismiss();
-      toast.error('Failed to import data: Invalid format or database error.');
-      console.error("Import Error:", error);
+      toast.error('Failed to import data.');
     } finally {
       setIsBusy(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="max-w-2xl mx-auto">
+  <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
-          <Database className="h-6 w-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Data Management</h2>
+          <Database className="h-6 w-6 text-brand-grey dark:text-gray-200" />
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Data Management</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Export Card */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Export Data</h3>
-            <p className="text-sm text-gray-600 mb-4">Download all reports as a JSON file.</p>
-            <button onClick={handleExport} disabled={isBusy} className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Export Reports'}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between bg-gray-50 dark:bg-[#454545] p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white">Export Data</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Download all reports as a JSON file.</p>
+            </div>
+            <button onClick={handleExport} disabled={isBusy} className="bg-brand-grey text-white py-2 px-4 rounded-lg hover:bg-brand-grey-light disabled:opacity-50 flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              <span>Export</span>
             </button>
           </div>
 
-          {/* Import Card */}
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Import Data</h3>
-            <p className="text-sm text-gray-600 mb-4">Import reports from a JSON file.</p>
-            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
-              Import Reports
+          <div className="flex items-center justify-between bg-gray-50 dark:bg-[#454545] p-4 rounded-lg">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white">Import Data</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Import reports from a JSON file.</p>
+            </div>
+            <button onClick={() => setShowImportDialog(true)} disabled={isBusy} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2">
+               <Upload className="h-4 w-4" />
+              <span>Import</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Import Dialog */}
       {showImportDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Import Data</h3>
+          <div className="bg-white dark:bg-[#454545] rounded-lg shadow-xl max-w-2xl w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Import Data</h3>
             <textarea
               value={importData}
               onChange={(e) => setImportData(e.target.value)}
-              className="w-full h-40 p-2 border rounded-lg"
+              className="w-full h-40 p-2 border rounded-lg dark:bg-[#454545] dark:border-gray-600"
               placeholder="Paste your exported JSON data here..."
             />
             <div className="flex space-x-3 mt-4">
               <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
                 {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Import'}
               </button>
-              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 dark:bg-[#454545] text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700">
                 Cancel
               </button>
             </div>

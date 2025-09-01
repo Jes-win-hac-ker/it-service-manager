@@ -137,9 +137,9 @@ const SearchReports: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+  <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
-            <Search className="h-6 w-6 text-blue-600" />
+            <Search className="h-6 w-6 text-brand-grey dark:text-gray-200" />
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
         </div>
         <form onSubmit={handleSearchFormSubmit} className="relative mb-6">
@@ -147,8 +147,8 @@ const SearchReports: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
-            placeholder="Search by Serial #, Name, or Phone..."
+            className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg"
+            placeholder="Search by Name, Phone, S/N, Part, or Status..."
           />
           {searchTerm && (
             <button 
@@ -164,11 +164,11 @@ const SearchReports: React.FC = () => {
         <div className="space-y-4">
           {isLoading ? (
              <div className="flex justify-center items-center py-10">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-brand-grey" />
              </div>
           ) : reports.length > 0 ? (
             reports.map((report) => (
-              <div key={report.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              <div key={report.id} className="border border-gray-200 dark:border-brand-grey rounded-lg p-4">
                 <div className="flex justify-between items-start flex-wrap gap-2">
                   <div className="flex items-center">
                     <div className="mr-3">{getStatusIndicator(report.status)}</div>
@@ -184,7 +184,7 @@ const SearchReports: React.FC = () => {
                 </div>
                 <p className="mt-4 text-gray-700 dark:text-gray-300">{report.problem_description}</p>
                 {(report.part_name || report.invoice_number || report.shop_name || report.part_number) && (
-                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-brand-grey text-sm text-gray-600 dark:text-gray-400 space-y-1">
                     {report.part_name && <p className="flex items-center"><Package className="h-4 w-4 mr-2"/>Part: {report.part_name}</p>}
                     {report.part_number && <p className="flex items-center">Part ID: {report.part_number}</p>}
                     {report.invoice_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Invoice: {report.invoice_number}</p>}
@@ -192,10 +192,10 @@ const SearchReports: React.FC = () => {
                   </div>
                 )}
                 <div className="flex justify-end items-center gap-2 mt-2">
-                  <button onClick={() => openEditModal(report)} className="flex items-center gap-2 text-sm bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 rounded-md hover:bg-blue-200 dark:hover:bg-blue-800">
+                  <button onClick={() => openEditModal(report)} className="flex items-center gap-2 text-sm bg-gray-100 text-brand-grey-dark px-3 py-1 rounded-md hover:bg-gray-200 dark:bg-[#454545] dark:text-gray-200 dark:hover:bg-gray-700">
                     <Edit className="h-4 w-4" /> Edit
                   </button>
-                  <button onClick={() => setReportToDelete(report)} className="flex items-center gap-2 text-sm bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200 px-3 py-1 rounded-md hover:bg-red-200 dark:hover:bg-red-800">
+                  <button onClick={() => setReportToDelete(report)} className="flex items-center gap-2 text-sm bg-red-100 text-red-700 px-3 py-1 rounded-md hover:bg-red-200">
                     <Trash2 className="h-4 w-4" /> Delete
                   </button>
                 </div>
@@ -208,7 +208,7 @@ const SearchReports: React.FC = () => {
         
         {hasMore && !isLoading && (
           <div className="mt-6 text-center">
-            <button onClick={loadMore} disabled={isLoadingMore} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-6 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50">
+            <button onClick={loadMore} disabled={isLoadingMore} className="bg-gray-200 dark:bg-[#454545] text-gray-800 dark:text-gray-200 py-2 px-6 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 disabled:opacity-50">
               {isLoadingMore ? 'Loading...' : 'Load More'}
             </button>
           </div>
@@ -217,43 +217,43 @@ const SearchReports: React.FC = () => {
 
       {reportToEdit && formData && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
+          <div className="bg-white dark:bg-[#454545] rounded-lg shadow-xl max-w-2xl w-full p-6">
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Report</h2>
             <form onSubmit={handleUpdate} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                  <select name="status" value={formData.status} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1">
+                  <select name="status" value={formData.status} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1">
                     {statusOptions.map(opt => <option key={opt}>{opt}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Name</label>
-                  <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                  <input name="customer_name" value={formData.customer_name} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Part Name</label>
-                  <input name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                  <input name="part_name" value={formData.part_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Part ID</label>
-                  <input name="part_number" value={formData.part_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                  <input name="part_number" value={formData.part_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Invoice Number</label>
-                  <input name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                  <input name="invoice_number" value={formData.invoice_number || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Shop Purchased From</label>
-                  <input name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                  <input name="shop_name" value={formData.shop_name || ''} onChange={handleInputChange} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Problem Description</label>
-                <textarea name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={3} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg mt-1"/>
+                <textarea name="problem_description" value={formData.problem_description} onChange={handleInputChange} rows={3} className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg mt-1"/>
               </div>
               <div className="flex justify-end gap-4 pt-4">
-                <button type="button" onClick={() => setReportToEdit(null)} className="bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-lg">Cancel</button>
+                <button type="button" onClick={() => setReportToEdit(null)} className="bg-gray-200 dark:bg-[#454545] py-2 px-4 rounded-lg">Cancel</button>
                 <button type="submit" disabled={isUpdating} className="bg-green-600 text-white py-2 px-4 rounded-lg flex items-center gap-2">
                   {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <Save className="h-4 w-4" />}
                   Save Changes
@@ -266,14 +266,14 @@ const SearchReports: React.FC = () => {
 
       {reportToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6">
+          <div className="bg-white dark:bg-[#454545] rounded-lg shadow-xl max-w-sm w-full p-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Report</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Are you sure you want to delete the report for "{reportToDelete.customer_name}"?</p>
             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
               <button type="button" onClick={handleDelete} disabled={isDeleting} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm">
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
-              <button type="button" onClick={() => setReportToDelete(null)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto sm:text-sm">
+              <button type="button" onClick={() => setReportToDelete(null)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-[#454545] text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 sm:mt-0 sm:w-auto sm:text-sm">
                 Cancel
               </button>
             </div>

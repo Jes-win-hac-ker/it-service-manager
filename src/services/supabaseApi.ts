@@ -1,21 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Report, ReportFormData } from '../types/Report';
 
-// Define types for Purchase data as well
-// NOTE: You may need to create a Purchase.ts type definition file for this
-interface Purchase {
-  id: string;
-  created_at: string;
-  invoice_number: string;
-  product_name: string;
-  product_serial_number: string;
-  shop_name: string;
-  purchase_date: string;
-  customer_name: string;
-}
-type PurchaseFormData = Omit<Purchase, 'id' | 'created_at'>;
-
-
 // Supabase client setup
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -27,7 +12,42 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 class SupabaseApiService {
-  // --- REPORT FUNCTIONS ---
+  // Fetch a single report by ID (from reports)
+  async getReportById(id: string): Promise<Report> {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error || !data) {
+      throw new Error('Report not found.');
+    }
+    return data;
+  }
+
+  // Update a report by ID (in reports)
+  async updateReport(id: string, reportData: ReportFormData): Promise<{ message: string }> {
+    const { error } = await supabase
+      .from('reports')
+      .update({ ...reportData })
+      .eq('id', id);
+    if (error) {
+      throw error;
+    }
+    return { message: 'Report updated.' };
+  }
+
+  // Delete a report by ID (from reports)
+  async deleteReport(id: string): Promise<{ message: string }> {
+    const { error } = await supabase
+      .from('reports')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      throw error;
+    }
+    return { message: 'Report deleted.' };
+  }
   async getAllReports(search?: string, page: number = 0, limit: number = 1000): Promise<Report[]> {
     let query = supabase
       .from('reports')
@@ -35,7 +55,8 @@ class SupabaseApiService {
       .order('created_at', { ascending: false });
 
     if (search) {
-      query = query.or(`serial_number.ilike.%${search}%,customer_name.ilike.%${search}%,phone_number.ilike.%${search}%,part_number.ilike.%${search}%`);
+      // Updated the search query to include status, part_name, and part_number
+      query = query.or(`serial_number.ilike.%${search}%,customer_name.ilike.%${search}%,phone_number.ilike.%${search}%,part_number.ilike.%${search}%,part_name.ilike.%${search}%,status.ilike.%${search}%`);
     }
 
     const from = page * limit;
@@ -51,84 +72,76 @@ class SupabaseApiService {
     return data || [];
   }
 
-  async getReportById(id: string): Promise<Report> {
-    const { data, error } = await supabase.from('reports').select('*').eq('id', id).single();
+  // Fetch all pending reports
+  async getAllPendingReports(page: number = 0, limit: number = 1000): Promise<Report[]> {
+    let query = supabase
+      .from('Pending_reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+    const from = page * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+    const { data, error } = await query;
     if (error) {
-      console.error('Error fetching report:', error);
-      throw error;
-    }
-    return data;
-  }
-
-  async createReport(reportData: ReportFormData): Promise<{ id: string; message: string }> {
-    const { data, error } = await supabase.from('reports').insert([reportData]).select('id').single();
-    if (error) {
-      console.error('Error creating report:', error);
-      throw error;
-    }
-    return { id: data.id, message: 'Report created successfully' };
-  }
-
-  async updateReport(id: string, reportData: ReportFormData): Promise<{ message: string }> {
-    const { error } = await supabase.from('reports').update(reportData).eq('id', id);
-    if (error) {
-      console.error('Error updating report:', error);
-      throw error;
-    }
-    return { message: 'Report updated successfully' };
-  }
-
-  async deleteReport(id: string): Promise<{ message: string }> {
-    const { error } = await supabase.from('reports').delete().eq('id', id);
-    if (error) {
-      console.error('Error deleting report:', error);
-      throw error;
-    }
-    return { message: 'Report deleted successfully' };
-  }
-
-  // --- DATA MANAGEMENT FUNCTIONS ---
-  async exportData(): Promise<string> {
-    const { data, error } = await supabase.from('reports').select('*');
-    if (error) {
-        console.error('Error exporting data:', error);
-        throw error;
-    }
-    return JSON.stringify(data, null, 2);
-  }
-
-  async importData(jsonData: string): Promise<void> {
-    try {
-      const reports: Report[] = JSON.parse(jsonData);
-      if (!Array.isArray(reports)) {
-        throw new Error('Invalid data format: JSON must be an array.');
-      }
-      const cleanReports = reports.map(({ id, created_at, ...report }) => report);
-      const { error } = await supabase.from('reports').insert(cleanReports);
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error importing data:', error);
-      throw new Error('Failed to import data.');
-    }
-  }
-
-  // --- PURCHASE FUNCTIONS ---
-  async getPurchases(): Promise<Purchase[]> {
-    const { data, error } = await supabase.from('purchases').select('*').order('purchase_date', { ascending: false });
-    if (error) {
-      console.error('Error fetching purchases:', error);
+      console.error('Error fetching pending reports:', error);
       throw error;
     }
     return data || [];
   }
 
-  async addPurchase(purchaseData: PurchaseFormData): Promise<Purchase> {
-    const { data, error } = await supabase.from('purchases').insert([purchaseData]).select().single();
+  // Insert a new report into Pending_reports
+  async createPendingReport(reportData: ReportFormData): Promise<{ id: string; message: string }> {
+    const { data, error } = await supabase
+      .from('Pending_reports')
+      .insert([{ ...reportData }])
+      .select('id')
+      .single();
     if (error) {
-      console.error('Error adding purchase:', error);
+      console.error('Error creating pending report:', error);
       throw error;
     }
-    return data;
+    return { id: data.id, message: 'Report submitted for review.' };
+  }
+
+  // Approve a pending report: move to reports and delete from Pending_reports
+  async approvePendingReport(id: string): Promise<{ message: string }> {
+    // Fetch the pending report
+    const { data, error } = await supabase
+      .from('Pending_reports')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error || !data) {
+      throw new Error('Pending report not found.');
+    }
+    // Insert into reports
+    const { error: insertError } = await supabase
+      .from('reports')
+      .insert([{ ...data }]);
+    if (insertError) {
+      throw insertError;
+    }
+    // Delete from Pending_reports
+    const { error: deleteError } = await supabase
+      .from('Pending_reports')
+      .delete()
+      .eq('id', id);
+    if (deleteError) {
+      throw deleteError;
+    }
+    return { message: 'Report approved and moved to reports.' };
+  }
+
+  // Reject a pending report: delete from Pending_reports
+  async rejectPendingReport(id: string): Promise<{ message: string }> {
+    const { error } = await supabase
+      .from('Pending_reports')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      throw error;
+    }
+    return { message: 'Report rejected and deleted.' };
   }
 }
 
