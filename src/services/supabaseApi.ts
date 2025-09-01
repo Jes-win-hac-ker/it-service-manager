@@ -91,9 +91,21 @@ class SupabaseApiService {
 
   // Insert a new report into Pending_reports
   async createPendingReport(reportData: ReportFormData): Promise<{ id: string; message: string }> {
+    // Calculate next Monday at 9am
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0=Sunday, 1=Monday, ...
+    const daysUntilMonday = (8 - dayOfWeek) % 7 || 7;
+    const nextMonday = new Date(now);
+    nextMonday.setDate(now.getDate() + daysUntilMonday);
+    nextMonday.setHours(9, 0, 0, 0); // 9:00am
+
+    const reportWithReminder = {
+      ...reportData,
+      reminder_at: nextMonday.toISOString(),
+    };
     const { data, error } = await supabase
       .from('Pending_reports')
-      .insert([{ ...reportData }])
+      .insert([reportWithReminder])
       .select('id')
       .single();
     if (error) {

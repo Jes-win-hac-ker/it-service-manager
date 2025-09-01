@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Clock, CheckCircle, AlertCircle, LogOut, User, MessageCircle } from 'lucide-react';
 import ClientFooter from './ClientFooter';
 import { useAuth } from '../contexts/AuthContext';
-import { getReports, addPendingReport } from '../services/api';
+import { getReports, addPendingReport, getPendingReports } from '../services/api';
 import { Report, ReportFormData } from '../types/Report';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -11,6 +11,7 @@ const ClientDashboard: React.FC = () => {
   const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('submit');
   const [userReports, setUserReports] = useState<Report[]>([]);
+  const [pendingReports, setPendingReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<ReportFormData>({
   serial_number: '',
@@ -27,6 +28,7 @@ const ClientDashboard: React.FC = () => {
   useEffect(() => {
     if (activeTab === 'status') {
       loadUserReports();
+      loadPendingReports();
     }
   }, [activeTab]);
   const loadUserReports = async () => {
@@ -41,6 +43,18 @@ const ClientDashboard: React.FC = () => {
       toast.error('Failed to load reports');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadPendingReports = async () => {
+    try {
+      const allPending = await getPendingReports();
+      const filteredPending = allPending.filter((report: Report) =>
+        report.customer_name?.toLowerCase().includes(user?.email?.toLowerCase() || '')
+      );
+      setPendingReports(filteredPending);
+    } catch (error) {
+      toast.error('Failed to load pending reports');
     }
   };
 
@@ -215,8 +229,37 @@ const ClientDashboard: React.FC = () => {
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
-          ) : userReports.length > 0 ? (
+          ) : (userReports.length > 0 || pendingReports.length > 0) ? (
             <div className="space-y-4">
+              {/* Pending Reports */}
+              {pendingReports.map((report) => (
+                <div key={report.id} className="bg-yellow-50 dark:bg-[#23272f] rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Report #{report.id}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Serial: {report.serial_number}</p>
+                    </div>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                      <Clock className="h-4 w-4 mr-1" /> Pending Review
+                    </span>
+                  </div>
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Problem Description</p>
+                    <p className="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-[#18181b] p-3 rounded-lg">{report.problem_description}</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="font-medium text-gray-700 dark:text-gray-200">Date Submitted</p>
+                      <p className="text-gray-900 dark:text-white">{formatDate(report.date_given)}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-700 dark:text-gray-200">Status</p>
+                      <p className="text-gray-900 dark:text-white">Pending Review</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {/* Processed Reports */}
               {userReports.map((report) => (
                 <div key={report.id} className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-6 outline outline-2 outline-[#e0e7ef] [box-shadow:0_0_48px_12px_rgba(80,120,255,0.18)] dark:outline dark:outline-2 dark:outline-[#23272f] dark:[box-shadow:0_0_24px_4px_rgba(35,39,47,0.7)]">
                   <div className="flex justify-between items-start mb-4">
