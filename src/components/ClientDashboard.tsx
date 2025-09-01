@@ -73,8 +73,9 @@ const ClientDashboard: React.FC = () => {
 
     setIsLoading(true);
     try {
-  await addPendingReport({
+      await addPendingReport({
         ...formData,
+        customer_name: user?.email || '', // Always set to user's email
       });
       toast.success('Report submitted successfully!');
       setFormData({
