@@ -61,23 +61,23 @@ const PendingReportsReview: React.FC = () => {
         <table className="min-w-full bg-white dark:bg-gray-800 rounded shadow">
           <thead>
             <tr>
-              <th className="px-2 py-1">Customer</th>
-              <th className="px-2 py-1">Phone</th>
-              <th className="px-2 py-1">Problem</th>
-              <th className="px-2 py-1">Date</th>
-              <th className="px-2 py-1">Status</th>
-              <th className="px-2 py-1">Actions</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Customer</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Phone</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Problem</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Date</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Status</th>
+              <th className="px-2 py-1 text-gray-900 dark:text-gray-100">Actions</th>
             </tr>
           </thead>
           <tbody>
             {pendingReports.map((report) => (
               <tr key={report.id} className="border-b">
-                <td className="px-2 py-1">{report.customer_name}</td>
-                <td className="px-2 py-1">{report.phone_number}</td>
-                <td className="px-2 py-1">{report.problem_description}</td>
-                <td className="px-2 py-1">{report.date_given}</td>
-                <td className="px-2 py-1">{report.status}</td>
-                <td className="px-2 py-1 flex gap-2">
+                <td className="px-2 py-1 text-gray-900 dark:text-gray-100">{report.customer_name}</td>
+                <td className="px-2 py-1 text-gray-900 dark:text-gray-100">{report.phone_number}</td>
+                <td className="px-2 py-1 text-gray-900 dark:text-gray-100">{report.problem_description}</td>
+                <td className="px-2 py-1 text-gray-900 dark:text-gray-100">{report.date_given}</td>
+                <td className="px-2 py-1 text-gray-900 dark:text-gray-100">{report.status}</td>
+                <td className="px-2 py-1 flex gap-2 text-gray-900 dark:text-gray-100">
                   <button
                     className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded disabled:opacity-50"
                     onClick={() => handleApprove(report.id)}
