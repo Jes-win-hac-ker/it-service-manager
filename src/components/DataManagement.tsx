@@ -49,8 +49,8 @@ const DataManagement: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
+    <div className="max-w-2xl w-full mx-auto px-2 sm:px-4">
+      <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-4 sm:p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Database className="h-6 w-6 text-brand-grey dark:text-gray-200" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Data Management</h2>
@@ -91,11 +91,11 @@ const DataManagement: React.FC = () => {
               className="w-full h-40 p-2 border rounded-lg dark:bg-[#454545] dark:border-gray-600"
               placeholder="Paste your exported JSON data here..."
             />
-            <div className="flex space-x-3 mt-4">
-              <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <button onClick={handleImport} disabled={!importData.trim() || isBusy} className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50">
                 {isBusy ? <Loader2 className="animate-spin mx-auto" /> : 'Import'}
               </button>
-              <button onClick={() => setShowImportDialog(false)} className="flex-1 bg-gray-300 dark:bg-[#454545] text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700">
+              <button onClick={() => setShowImportDialog(false)} className="w-full sm:w-auto bg-gray-300 dark:bg-[#454545] text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700">
                 Cancel
               </button>
             </div>

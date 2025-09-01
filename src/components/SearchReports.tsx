@@ -136,24 +136,24 @@ const SearchReports: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl w-full mx-auto px-2 sm:px-4">
       <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
-            <Search className="h-6 w-6 text-brand-grey dark:text-gray-200" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
+          <Search className="h-6 w-6 text-brand-grey dark:text-gray-200" />
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
         </div>
-        <form onSubmit={handleSearchFormSubmit} className="relative mb-6">
+        <form onSubmit={handleSearchFormSubmit} className="relative mb-6 flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg"
+            className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#454545] text-gray-900 dark:text-white rounded-lg text-sm"
             placeholder="Search by Name, Phone, S/N, Part, or Status..."
           />
           {searchTerm && (
             <button 
               onClick={() => setSearchTerm('')} 
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
+              className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center pr-3 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
               type="button"
             >
               <X className="h-5 w-5" />
