@@ -10,14 +10,15 @@ const SubmitReport: React.FC = () => {
   const { user } = useAuth();
   const [showExtraFields, setShowExtraFields] = useState(false);
   const [formData, setFormData] = useState<ReportFormData>({
-    serial_number: '',
-    customer_name: '',
-    phone_number: '',
-    problem_description: '',
-    date_given: format(new Date(), 'yyyy-MM-dd'),
-    status: 'Pending Diagnosis',
-    invoice_number: '',
-    part_name: '',
+  serial_number: '',
+  customer_name: '',
+  customer_email: user?.email || '',
+  phone_number: '',
+  problem_description: '',
+  date_given: format(new Date(), 'yyyy-MM-dd'),
+  status: 'Pending Diagnosis',
+  invoice_number: '',
+  part_name: '',
     shop_name: '',
     part_number: '',
   });
@@ -54,6 +55,7 @@ const SubmitReport: React.FC = () => {
     setFormData({
       serial_number: '',
       customer_name: '',
+      customer_email: user?.email || '',
       phone_number: '',
       problem_description: '',
       date_given: format(new Date(), 'yyyy-MM-dd'),

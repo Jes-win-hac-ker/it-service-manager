@@ -55,12 +55,13 @@ const UpdateReport: React.FC = () => {
       ? format(new Date(report.date_given), 'yyyy-MM-dd')
       : '';
     setFormData({
-      serial_number: report.serial_number,
-      customer_name: report.customer_name,
-      phone_number: report.phone_number,
-      problem_description: report.problem_description,
-      date_given: formattedDate,
-      status: report.status || 'Pending Diagnosis',
+  serial_number: report.serial_number,
+  customer_name: report.customer_name,
+  customer_email: report.customer_email || '',
+  phone_number: report.phone_number,
+  problem_description: report.problem_description,
+  date_given: formattedDate,
+  status: report.status || 'Pending Diagnosis',
     });
     setSearchResults([]);
   };

@@ -62,12 +62,13 @@ const SearchReports: React.FC = () => {
         return isValid(new Date(date)) ? format(new Date(date), 'yyyy-MM-dd') : '';
     }
     setFormData({
-      serial_number: report.serial_number,
-      customer_name: report.customer_name,
-      phone_number: report.phone_number,
-      problem_description: report.problem_description,
-      date_given: formatDateForInput(report.date_given),
-      status: report.status || 'Pending Diagnosis',
+  serial_number: report.serial_number,
+  customer_name: report.customer_name,
+  customer_email: report.customer_email || '',
+  phone_number: report.phone_number,
+  problem_description: report.problem_description,
+  date_given: formatDateForInput(report.date_given),
+  status: report.status || 'Pending Diagnosis',
       invoice_number: report.invoice_number || '',
       part_name: report.part_name || '',
       shop_name: report.shop_name || '',
