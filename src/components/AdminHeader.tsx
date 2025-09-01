@@ -28,7 +28,6 @@ const AdminHeader: React.FC = () => {
               className="flex items-center space-x-2 text-gray-600 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
             </button>
           </div>
         </div>
