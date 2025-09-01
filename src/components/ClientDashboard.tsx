@@ -113,7 +113,7 @@ const ClientDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#18181b]">
+  <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#18181b]">
       {/* Header */}
   <header className="bg-white dark:bg-[#18181b] shadow-sm border-b border-gray-200 dark:border-gray-700 outline outline-2 outline-[#e0e7ef] [box-shadow:0_0_32px_8px_rgba(80,120,255,0.18)] dark:outline dark:outline-2 dark:outline-[#23272f] dark:[box-shadow:0_0_16px_2px_rgba(35,39,47,0.7)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -138,7 +138,7 @@ const ClientDashboard: React.FC = () => {
           </div>
         </div>
       </header>
-    <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <main className="flex-1 max-w-7xl w-full mx-auto py-8 px-4 sm:px-6 lg:px-8 overflow-y-auto">
       {activeTab === 'submit' ? (
         <div className="max-w-2xl mx-auto">
           <div className="bg-white dark:bg-[#18181b] rounded-lg shadow-md p-6 outline outline-2 outline-[#e0e7ef] [box-shadow:0_0_48px_12px_rgba(80,120,255,0.18)] dark:outline dark:outline-2 dark:outline-[#23272f] dark:[box-shadow:0_0_24px_4px_rgba(35,39,47,0.7)]">

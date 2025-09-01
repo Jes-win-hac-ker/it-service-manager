@@ -136,8 +136,9 @@ const SearchReports: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl w-full mx-auto px-2 sm:px-4">
-      <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#18181b]">
+  <main className="flex-1 max-w-4xl w-full mx-auto px-2 sm:px-4 py-6">
+  <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Search className="h-6 w-6 text-brand-grey dark:text-gray-200" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
@@ -280,6 +281,7 @@ const SearchReports: React.FC = () => {
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 };

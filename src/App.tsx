@@ -67,14 +67,12 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#454545]">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#454545]">
       {/* Show AdminHeader for admin, Header for others */}
       {user?.role === 'admin' ? <AdminHeader /> : <Header />}
 
-      <main className="py-8 px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="max-w-7xl mx-auto">
-          {renderActiveComponent()}
-        </div>
+      <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto overflow-y-auto">
+        {renderActiveComponent()}
       </main>
 
       {/* Show separate footers for client and admin */}
