@@ -114,12 +114,13 @@ class SupabaseApiService {
     if (error || !data) {
       throw new Error('Pending report not found.');
     }
-    // Log the payload being sent to reports
-    console.log('Payload being sent to reports:', data);
+    // Remove id field to let Supabase generate a new UUID
+    const { id: _pendingId, ...rest } = data;
+    console.log('Payload being sent to reports:', rest);
     // Insert into reports
     const { error: insertError } = await supabase
       .from('reports')
-      .insert([{ ...data }]);
+      .insert([rest]);
     if (insertError) {
       throw insertError;
     }
