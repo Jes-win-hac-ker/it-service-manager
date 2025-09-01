@@ -3,6 +3,7 @@ export interface Report {
   created_at: string;
   serial_number: string;
   customer_name: string;
+  customer_email: string;
   phone_number: string;
   problem_description: string;
   date_given: string;

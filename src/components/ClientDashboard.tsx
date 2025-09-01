@@ -16,6 +16,7 @@ const ClientDashboard: React.FC = () => {
   const [formData, setFormData] = useState<ReportFormData>({
   serial_number: '',
   customer_name: '',
+  customer_email: '',
   phone_number: '',
   problem_description: '',
   date_given: format(new Date(), 'yyyy-MM-dd'),
@@ -36,7 +37,7 @@ const ClientDashboard: React.FC = () => {
     try {
       const allReports = await getReports();
       const filtered = allReports.filter((report: Report) =>
-        report.customer_name?.toLowerCase().includes(user?.email?.toLowerCase() || '')
+        report.customer_email?.toLowerCase() === user?.email?.toLowerCase()
       );
       setUserReports(filtered);
     } catch (error) {
@@ -50,7 +51,7 @@ const ClientDashboard: React.FC = () => {
     try {
       const allPending = await getPendingReports();
       const filteredPending = allPending.filter((report: Report) =>
-        report.customer_name?.toLowerCase().includes(user?.email?.toLowerCase() || '')
+        report.customer_email?.toLowerCase() === user?.email?.toLowerCase()
       );
       setPendingReports(filteredPending);
     } catch (error) {
@@ -75,12 +76,13 @@ const ClientDashboard: React.FC = () => {
     try {
       await addPendingReport({
         ...formData,
-        customer_name: user?.email || '', // Always set to user's email
+        customer_email: user?.email || '', // Store email separately
       });
       toast.success('Report submitted successfully!');
       setFormData({
         serial_number: '',
         customer_name: '',
+        customer_email: '',
         phone_number: '',
         problem_description: '',
         date_given: format(new Date(), 'yyyy-MM-dd'),
@@ -327,6 +329,7 @@ const ClientDashboard: React.FC = () => {
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Reports Found</h3>
               <p className="text-gray-600 dark:text-gray-300">You haven't submitted any reports yet.</p>
+              <p className="text-red-600 dark:text-red-400 mt-2">If your report is not listed here, it may have been closed, deleted, or rejected by the owner.</p>
             </div>
           )}
         </div>
