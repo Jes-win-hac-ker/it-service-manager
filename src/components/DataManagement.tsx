@@ -50,7 +50,7 @@ const DataManagement: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-  <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Database className="h-6 w-6 text-brand-grey dark:text-gray-200" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Data Management</h2>

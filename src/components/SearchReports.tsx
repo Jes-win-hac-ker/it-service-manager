@@ -137,7 +137,7 @@ const SearchReports: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-  <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-[#454545] rounded-lg shadow-md p-6">
         <div className="flex items-center space-x-2 mb-6">
             <Search className="h-6 w-6 text-brand-grey dark:text-gray-200" />
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Search, Update & Delete</h2>
@@ -168,7 +168,7 @@ const SearchReports: React.FC = () => {
              </div>
           ) : reports.length > 0 ? (
             reports.map((report) => (
-              <div key={report.id} className="border border-gray-200 dark:border-brand-grey rounded-lg p-4">
+              <div key={report.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
                 <div className="flex justify-between items-start flex-wrap gap-2">
                   <div className="flex items-center">
                     <div className="mr-3">{getStatusIndicator(report.status)}</div>
@@ -184,7 +184,7 @@ const SearchReports: React.FC = () => {
                 </div>
                 <p className="mt-4 text-gray-700 dark:text-gray-300">{report.problem_description}</p>
                 {(report.part_name || report.invoice_number || report.shop_name || report.part_number) && (
-                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-brand-grey text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-400 space-y-1">
                     {report.part_name && <p className="flex items-center"><Package className="h-4 w-4 mr-2"/>Part: {report.part_name}</p>}
                     {report.part_number && <p className="flex items-center">Part ID: {report.part_number}</p>}
                     {report.invoice_number && <p className="flex items-center"><Hash className="h-4 w-4 mr-2"/>Invoice: {report.invoice_number}</p>}

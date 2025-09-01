@@ -67,7 +67,7 @@ function App() {
   }
 
   return (
-  <div className="min-h-screen bg-gray-50 dark:bg-[#454545]">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#454545]">
       {/* Show AdminHeader for admin, Header for others */}
       {user?.role === 'admin' ? <AdminHeader /> : <Header />}
 
@@ -76,7 +76,6 @@ function App() {
           {renderActiveComponent()}
         </div>
       </main>
-
 
       {/* Show separate footers for client and admin */}
       {user?.role === 'admin' ? (

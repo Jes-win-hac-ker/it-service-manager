@@ -10,15 +10,21 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, userRole }) => {
   const { theme, toggleTheme } = useTheme();
-  // Show review tab only for admin
-  const tabs = [
-    { id: 'submit', label: 'Submit', icon: FileText },
-    { id: 'search', label: 'Manage', icon: Search },
-    ...(userRole === 'admin' ? [{ id: 'review', label: 'Review', icon: Database }] : []),
-  ];
+  // Dynamic tabs based on userRole
+  const tabs =
+    userRole === 'admin'
+      ? [
+          { id: 'submit', label: 'Submit', icon: FileText },
+          { id: 'search', label: 'Manage', icon: Search },
+          { id: 'review', label: 'Review', icon: Database },
+        ]
+      : [
+          { id: 'submit', label: 'Submit', icon: FileText },
+          { id: 'search', label: 'Manage', icon: Search },
+        ];
 
   return (
-  <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#18181b] border-t border-gray-200 dark:border-gray-700 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#18181b] border-t border-gray-200 dark:border-gray-700 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-around items-center h-16">
         {tabs.map((tab) => {
           const Icon = tab.icon;
