@@ -143,6 +143,59 @@ class SupabaseApiService {
     }
     return { message: 'Report rejected and deleted.' };
   }
+
+  // Export all reports as JSON
+  async exportData(): Promise<string> {
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*');
+    if (error) {
+      throw error;
+    }
+    return JSON.stringify(data || [], null, 2);
+  }
+
+  // Import reports from JSON
+  async importData(jsonData: string): Promise<void> {
+    let reports;
+    try {
+      reports = JSON.parse(jsonData);
+    } catch (e) {
+      throw new Error('Invalid JSON data');
+    }
+    if (!Array.isArray(reports)) throw new Error('Data must be an array');
+    // Optionally, validate each report object here
+    const { error } = await supabase
+      .from('reports')
+      .insert(reports);
+    if (error) {
+      throw error;
+    }
+  }
+
+  // Get all purchases (stub)
+  async getPurchases(): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('purchases')
+      .select('*');
+    if (error) {
+      throw error;
+    }
+    return data || [];
+  }
+
+  // Add a new purchase (stub)
+  async addPurchase(purchase: any): Promise<{ id: string }> {
+    const { data, error } = await supabase
+      .from('purchases')
+      .insert([purchase])
+      .select('id')
+      .single();
+    if (error) {
+      throw error;
+    }
+    return { id: data.id };
+  }
 }
 
 export const supabaseApiService = new SupabaseApiService();
